@@ -12,13 +12,13 @@ Besonders geholfen hat uns, die Produktidee einmal sauber festzuhalten. Unser ro
 
 Als Haupt-Werkzeug haben wir Claude Code eingesetzt, also einen KI-Agenten direkt in der Entwicklungsumgebung. Ergänzend haben wir ChatGPT genutzt, vor allem zum Brainstormen von Ideen, für Erklärungen und als zweite Meinung. Wenn wir unsicher waren, ob eine Lösung von Claude Code sauber ist, haben wir sie von ChatGPT gegenchecken lassen. Genau das deckt sich mit dem Hinweis aus der Vorlesung, eine andere KI in Maßen zum Prüfen zu verwenden.
 
-Damit die KI nicht bei jeder Aufgabe von vorne raten muss, haben wir ihr festen Kontext mitgegeben:
+Damit die KI nicht bei jeder Aufgabe von vorne raten muss, haben wir ihr im Frontend-Repository festen Kontext mitgegeben:
 
 - **AGENTS.md** hält die dauerhaften Produkt- und Projektregeln fest, zum Beispiel die Produktvision und die Design- und Sicherheitsvorgaben.
-- **CLAUDE.md** legt fest, wie der Agent arbeiten soll, etwa dass er den bestehenden Code erst prüft, bevor er etwas umsetzt.
-- **CURRENT_STATE.md** ist eine Momentaufnahme vom Stand der Umsetzung als zusätzliche Orientierung.
+- **CLAUDE.md** beschreibt, wie der Agent arbeiten soll, etwa dass er bestehenden Code vor Änderungen zunächst prüft.
+- **CURRENT_STATE.md** wurde zu Beginn als zusätzliche Momentaufnahme des Umsetzungsstands gepflegt. Später wurde die Datei nicht mehr laufend aktualisiert und dient deshalb nur noch als historische Orientierung.
 
-Technisch steht das Frontend auf Next.js mit React und TypeScript, das Backend läuft über Supabase mit Postgres, Migrationen und serverseitigen Funktionen. Für die Suche in den Unterlagen nutzen wir eine Vektorsuche, damit der Assistent Fragen mit Bezug zum echten Kursmaterial beantworten kann.
+Technisch steht das Frontend auf Next.js mit React und TypeScript, das Backend läuft über Supabase mit Postgres, Migrationen und serverseitigen Funktionen. Für die Suche in den Unterlagen haben wir zunächst eine Vektorsuche eingesetzt und später um eine hybride Suche erweitert, die semantische und klassische Suchverfahren kombiniert. So kann der Assistent Fragen mit Bezug zum echten Kursmaterial beantworten.
 
 ## Wie wir mit der KI gearbeitet haben
 
@@ -33,11 +33,11 @@ Diese Arbeitsweise spiegelt sich auch in der Struktur wider. Wir haben in klar b
 
 ## Testen und Qualität
 
-Testen war für uns kein nachträglicher Schritt, auch wenn wir das erst mit der Zeit richtig ernst genommen haben. Für die Datenbank haben wir eigene Tests geschrieben, dazu kommen Unit-Tests und End-to-End-Tests für die wichtigsten Abläufe. Eine CI prüft bei jeder Änderung automatisch den Stil, die Tests und einen frischen Build. So fallen Fehler früh auf und nicht erst in der Präsentation.
+Testen war für uns kein nachträglicher Schritt, auch wenn wir das erst mit der Zeit richtig ernst genommen haben. Für die Datenbank haben wir eigene Tests geschrieben, dazu kommen Unit-Tests und End-to-End-Tests für die wichtigsten Abläufe. Die wichtigsten Prüfungen laufen zusätzlich automatisiert über die CI, insbesondere bei den dafür konfigurierten Pull Requests und Pushes. Dort werden der Stil, die Tests und ein frischer Build geprüft. So fallen Fehler früh auf und nicht erst in der Präsentation.
 
 ## Zusammenarbeit im Team
 
-Wir haben im Team über Pull Requests gearbeitet. Jede Änderung lief über einen eigenen Zweig und wurde vor dem Zusammenführen geprüft. Der grobe Weg war immer Feature-Zweig, dann Pull Request, dann automatische Prüfung durch die CI und erst danach das Zusammenführen. Für die Produktion gibt es eine zusätzliche Freigabe, damit nichts ungeprüft live geht. Dadurch konnten mehrere von uns parallel arbeiten, ohne sich gegenseitig den Stand kaputt zu machen.
+Wir haben im Team über Pull Requests gearbeitet. Features und größere Änderungen liefen in der Regel über eigene Zweige und Pull Requests und wurden vor dem Zusammenführen geprüft. Der grobe Weg war Feature-Zweig, dann Pull Request, dann automatische Prüfung durch die CI und erst danach das Zusammenführen. Staging und Produktion sind als getrennte Umgebungen angelegt, damit Änderungen zuerst auf Staging geprüft werden können. Dadurch konnten mehrere von uns parallel arbeiten, ohne sich gegenseitig den Stand kaputt zu machen.
 
 ## Dokumentation
 
@@ -45,7 +45,7 @@ Parallel zum Code haben wir viel dokumentiert, bewusst von uns selbst geschriebe
 
 ## Deployment
 
-Das Backend wird über die CI ausgerollt. Migrationen und Funktionen gehen zuerst auf eine Staging-Umgebung, auf der wir kritische Abläufe wie Anmeldung und Datenzugriffe prüfen. Erst nach einer bewussten Freigabe geht der Stand in die Produktion. Dieser getrennte Weg hat uns geholfen, Änderungen in Ruhe zu testen, bevor sie für alle sichtbar werden.
+Das Backend wird über die CI ausgerollt. Migrationen und Funktionen gehen zuerst auf eine Staging-Umgebung, auf der wir kritische Abläufe wie Anmeldung und Datenzugriffe prüfen. Erst danach ist der Stand für die Produktion vorgesehen. Dieser getrennte Weg hat uns geholfen, Änderungen in Ruhe zu testen, bevor sie für alle sichtbar werden.
 
 ## Fazit zum Prozess
 
