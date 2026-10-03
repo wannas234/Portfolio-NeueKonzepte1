@@ -1,0 +1,116 @@
+[
+  {
+    "name": "Amelie",
+    "tagline": "Die Fragende",
+    "age": "25",
+    "role": "Masterstudentin (Geisteswissenschaften)",
+    "context": [
+      "25 Jahre",
+      "Uni Bielefeld",
+      "wenige, aber tiefe Kurse",
+      "schreibt gerade eine Seminararbeit"
+    ],
+    "personality": [
+      "Analytisch",
+      "Organisiert",
+      "Introvertiert",
+      "Busy"
+    ],
+    "bio": "Dieses Semester hat Amelie wenige, dafür inhaltlich sehr tiefe Kurse: Seminararbeiten, lange Paper, komplexe Zusammenhänge. Starre Karteikarten reichen ihr da nicht – sie will nachfragen können: „Was bedeutet das im Kontext von Vorlesung X?“ In der App lädt sie ihre Unterlagen hoch und fragt den kursbezogenen KI-Chat, der ihr nur aus ihrem Material antwortet – mit Quellenangabe zu Folie und Seite, statt generischer ChatGPT-Antworten.",
+    "needs": [
+      "Kursbezogener KI-Chat, der nur aus ihren hochgeladenen Unterlagen antwortet",
+      "Antworten mit Quellenangabe (Folie/Seite) – zitierfähig für die Seminararbeit",
+      "Nachfragen im Kontext eines bestimmten Kurses statt generischer Antworten"
+    ],
+    "motivations": [
+      "Tieferes Verständnis statt Oberflächenwissen",
+      "Zeit sparen bei der Recherche für Seminararbeiten"
+    ],
+    "painPoints": [
+      "Generische KI-Antworten ohne Bezug zu ihrem Kurs",
+      "Quellen mühsam selbst in langen Papern suchen müssen"
+    ],
+    "goals": [
+      "Belegbare, zitierfähige Antworten für ihre Seminararbeit",
+      "Nicht nur auswendig lernen, sondern Zusammenhänge verstehen"
+    ],
+    "interests": "KI-Tools zum Lernen, wissenschaftliches Arbeiten, Paper lesen, Forschungscommunity",
+    "influences": "Andere KI-Assistenten (ChatGPT, Claude) als Vergleichsmaßstab"
+  },
+  {
+    "name": "Tim",
+    "tagline": "Der Zweifler",
+    "age": "17",
+    "role": "Schüler, gymnasiale Oberstufe (Q1 / 11. Klasse)",
+    "context": [
+      "17 Jahre",
+      "Hamburg",
+      "lebt bei den Eltern",
+      "bereitet sich aufs Abitur vor"
+    ],
+    "personality": [
+      "Skeptisch",
+      "Pragmatisch",
+      "Wenig Geduld",
+      "Gewohnheitsmensch"
+    ],
+    "bio": "Tim bereitet sich aufs Abitur vor und kommt bisher mit Heften, Arbeitsblättern und der WhatsApp-Klassengruppe zurecht. Neuen Tools gegenüber ist er skeptisch – aber als er seine Mitschriften hochlädt und sofort Karteikarten und eine Zusammenfassung zurückbekommt, sieht er den Mehrwert. Er legt seine Fächer als Kurse an und nutzt die App gezielt zum schnellen Wiederholen, mit möglichst wenig Zusatzaufwand.",
+    "needs": [
+      "Aus eigenen Heften und Arbeitsblättern automatisch Karteikarten und Zusammenfassungen erzeugen",
+      "Fragen zum eigenen Stoff direkt beantwortet bekommen, ohne alles abzutippen",
+      "Alle Fächer und Abi-Termine an einem Ort"
+    ],
+    "motivations": [
+      "Abitur bestehen mit möglichst wenig Zusatzaufwand",
+      "Schnell wiederholen statt stundenlang Zettel wälzen"
+    ],
+    "painPoints": [
+      "Hefte und WhatsApp-Gruppe sind unübersichtlich",
+      "Wenig Geduld – bricht ab, wenn der Nutzen nicht sofort sichtbar ist"
+    ],
+    "goals": [
+      "Effizient und strukturiert fürs Abi lernen",
+      "Ordnung in seine verstreuten Unterlagen bringen"
+    ],
+    "interests": "Kein Early Adopter – überzeugt nur durch sofort sichtbaren Nutzen",
+    "influences": "Empfehlung eines Klassenkameraden; Eltern zahlen ggf. das Abo"
+  },
+  {
+    "name": "Nora",
+    "tagline": "Die Fokus-Suchende",
+    "age": "22",
+    "role": "Bachelorstudentin (Psychologie), 3. Semester",
+    "context": [
+      "22 Jahre",
+      "WG in Köln",
+      "ADHS-Diagnose seit der Schulzeit",
+      "leichte Legasthenie"
+    ],
+    "personality": [
+      "Kreativ",
+      "Braucht Struktur",
+      "Schnell überreizt",
+      "Engagiert"
+    ],
+    "bio": "Nora hat kein Problem mit dem Stoff an sich, sondern damit, dranzubleiben. Lange, unstrukturierte Textseiten überfordern sie schnell. In der App lädt sie ihr Material hoch und lässt es in kurze Zusammenfassungen und Karteikarten herunterbrechen – Stoff in machbaren Häppchen statt Textwänden. Dass der KI-Chat immer nur auf einen Kurs fokussiert, hilft ihr, nicht abzuschweifen.",
+    "needs": [
+      "Lange Texte in kurze Zusammenfassungen und Karteikarten heruntergebrochen",
+      "Fokus auf einen Kurs/ein Thema statt vieler gleichzeitiger Reize",
+      "Klare, aufgeräumte Oberfläche ohne visuelles Rauschen"
+    ],
+    "motivations": [
+      "Endlich Struktur, die ihr vorgegeben wird – statt sie selbst schaffen zu müssen",
+      "Mehr Erfolgserlebnisse durch kleine, machbare Lerneinheiten"
+    ],
+    "painPoints": [
+      "Lange Textwände ohne Gliederung – mit Legasthenie besonders schwer",
+      "Überladene Tools mit zu vielen gleichzeitigen Reizen"
+    ],
+    "goals": [
+      "Stoff in kleinen, machbaren Schritten bewältigen",
+      "Länger fokussiert bleiben, weniger Frust beim Lernen"
+    ],
+    "interests": "Fokus-Apps (z. B. Pomodoro-Timer), strukturierte Lernmethoden",
+    "influences": "ADHS-Community (TikTok, Reddit, Selbsthilfegruppe); Beratungsstelle der Uni"
+  }
+]
