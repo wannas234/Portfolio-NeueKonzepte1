@@ -1,0 +1,96 @@
+.page { --doc-ink: var(--app-ink); --doc-muted: var(--app-muted); --doc-line: var(--app-line); --doc-accent-a: var(--app-purple-light); --doc-accent-b: var(--app-purple); max-width: var(--content-width); margin-inline: auto; color: var(--doc-ink); }
+.subhead { margin-top: var(--space-2); color: var(--doc-muted); font-size: var(--font-body); }
+
+.backLink { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 34px; margin-bottom: var(--space-5); padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2); color: var(--doc-muted); background: transparent; border: 1px solid transparent; border-radius: 999px; font-size: 13px; font-weight: 600; white-space: nowrap; text-decoration: none; transition: color var(--motion), background var(--motion); }
+.backLink:hover { color: var(--doc-ink); background: var(--app-purple-soft); }
+.backLink svg { width: 16px; height: 16px; }
+
+.courseHeader { display: flex; align-items: center; gap: var(--space-5); margin-bottom: var(--space-8); }
+.courseHeader h1 { margin-top: var(--space-2); font-size: clamp(1.75rem, 2.6vw, 2.25rem); font-weight: 700; letter-spacing: -.03em; }
+.icon { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; color: var(--app-on-accent); border-radius: 12px; font-size: 15px; font-weight: 700; letter-spacing: -.02em; }
+.icon[data-tone="green"] { background: linear-gradient(135deg, #34d399, var(--app-purple)); }
+.icon[data-tone="amber"] { background: linear-gradient(135deg, #fbbf24, #d97706); }
+.icon[data-tone="sage"] { background: linear-gradient(135deg, #a3b899, #5f7a52); }
+.icon[data-tone="blue"] { background: linear-gradient(135deg, #60a5fa, var(--app-blue)); }
+.icon[data-tone="rose"] { background: linear-gradient(135deg, #fb7185, #e11d48); }
+.icon[data-tone="violet"] { background: linear-gradient(135deg, #a78bfa, var(--app-purple-strong)); }
+.icon[data-tone="teal"] { background: linear-gradient(135deg, #2dd4bf, #0f766e); }
+.icon[data-tone="coral"] { background: linear-gradient(135deg, #fb923c, #ea580c); }
+.icon[data-tone="indigo"] { background: linear-gradient(135deg, #818cf8, #4338ca); }
+
+.card { padding: var(--space-6); background: var(--app-surface); border: 1px solid var(--doc-line); border-radius: 12px; }
+.meta { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); flex-wrap: wrap; padding-bottom: var(--space-4); margin-bottom: var(--space-5); border-bottom: 1px solid var(--doc-line); color: var(--doc-muted); font-size: 12px; }
+.metaInfo { display: inline-flex; align-items: center; gap: var(--space-2); }
+.dot { color: var(--doc-line); }
+.metaActions { display: inline-flex; align-items: center; gap: var(--space-3); }
+
+.secondaryButton { display: inline-flex; align-items: center; min-height: 38px; padding-inline: var(--space-4); color: var(--doc-ink); background: var(--app-surface); border: 1.5px solid var(--doc-line); border-radius: 999px; font-size: 12.5px; font-weight: 650; cursor: pointer; transition: background var(--motion), border-color var(--motion); }
+.secondaryButton:hover:not(:disabled) { background: var(--app-bg); border-color: var(--app-line-strong); }
+.secondaryButton:disabled { opacity: .5; cursor: not-allowed; }
+.dangerButton { display: inline-flex; align-items: center; min-height: 38px; padding-inline: var(--space-4); color: var(--app-danger-strong); background: var(--app-surface); border: 1.5px solid var(--app-rose-line); border-radius: 999px; font-size: 12.5px; font-weight: 650; cursor: pointer; transition: background var(--motion); }
+.dangerButton:hover:not(:disabled) { background: var(--app-danger-soft); }
+.dangerButton:disabled { opacity: .5; cursor: not-allowed; }
+
+.field { display: block; }
+.field textarea { display: block; width: 100%; min-height: 340px; padding: var(--space-5); color: var(--doc-ink); background: var(--app-bg); border: 1.5px solid var(--doc-line); border-radius: 16px; font-size: 15px; line-height: 1.75; resize: vertical; transition: border-color var(--motion), box-shadow var(--motion); }
+.field textarea:focus-visible { outline: none; background: var(--app-surface); border-color: var(--doc-accent-b); box-shadow: 0 0 0 4px rgba(14, 136, 80, 0.14); }
+.readOnlyText { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 72ch; font-size: 15px; line-height: 1.8; color: var(--doc-ink); }
+
+.actions { display: flex; align-items: center; gap: var(--space-4); margin-top: var(--space-5); }
+.primaryButton { display: inline-flex; align-items: center; min-height: 44px; padding-inline: var(--space-5); color: var(--app-on-accent); background: linear-gradient(135deg, var(--doc-accent-a), var(--doc-accent-b)); border: 0; border-radius: 12px; font-size: 14px; font-weight: 650; cursor: pointer; transition: box-shadow var(--motion), transform var(--motion); }
+.primaryButton:hover:not(:disabled) { box-shadow: 0 14px 26px -14px rgba(14, 136, 80, 0.55); transform: translateY(-1px); }
+.primaryButton:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.status { font-size: 13px; color: var(--doc-muted); }
+.status[data-tone="error"] { color: var(--app-danger); }
+.empty { max-width: 640px; margin: var(--space-8) auto 0; padding: var(--space-10) var(--space-6); background: var(--app-surface); border: 1px solid var(--doc-line); border-radius: 12px; text-align: center; }
+.empty h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 700; letter-spacing: -.02em; }
+.empty p { max-width: 46ch; margin: var(--space-3) auto 0; color: var(--doc-muted); font-size: 13.5px; line-height: 1.6; }
+
+@media (max-width: 640px) {
+  .meta { flex-direction: column; align-items: flex-start; }
+}
+
+/* Generierte Zusammenfassung. Sie steht als eigene Karte über der selbst geschriebenen
+   und ist durchgehend als erzeugt gekennzeichnet — Nutzer sollen jederzeit erkennen,
+   woher ein Text stammt. */
+.stack { display: grid; gap: var(--space-5); }
+.panelTitle { font-size: 17px; font-weight: 700; letter-spacing: -.02em; }
+/* Steht die Überschrift über der Metazeile, braucht diese etwas Abstand nach oben. */
+.panelTitle + .meta { margin-top: var(--space-4); }
+.panelHint { max-width: 62ch; margin-top: var(--space-3); color: var(--doc-muted); font-size: 13.5px; line-height: 1.65; }
+
+.aiTag { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; background: var(--app-purple-tint); color: var(--app-purple); font-size: 11px; font-weight: 650; letter-spacing: .03em; }
+.aiTag svg { width: 11px; height: 11px; }
+
+.progress { margin-top: var(--space-5); }
+.progressTrack { overflow: hidden; height: 6px; background: var(--app-bg); border: 1px solid var(--doc-line); border-radius: 999px; }
+.progressBar { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--doc-accent-a), var(--doc-accent-b)); border-radius: 999px; transition: width var(--motion); }
+/* Solange das Backend die Gesamtzahl der Schritte nicht kennt, zeigt der Balken
+   Bewegung statt eines erfundenen Prozentwerts. */
+.progressBar[data-indeterminate] { width: 35%; animation: summary-progress 1.4s ease-in-out infinite; }
+@keyframes summary-progress { 0% { transform: translateX(-100%); } 100% { transform: translateX(340%); } }
+.progress .status { margin-top: var(--space-3); }
+
+.staleNotice { margin-top: var(--space-4); padding: var(--space-3) var(--space-4); background: var(--app-amber-tint); border-left: 2px solid var(--app-fg-amber); border-radius: 0 10px 10px 0; color: var(--doc-ink); font-size: 12.5px; line-height: 1.6; }
+
+.sections { display: grid; gap: var(--space-6); margin-top: var(--space-5); }
+.section h3 { margin-bottom: var(--space-2); font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+.sourceList { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-3); }
+.sourceLabel { color: var(--doc-muted); font-size: 11.5px; font-weight: 650; }
+.sourceChip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; background: var(--app-bg); border: 1px solid var(--doc-line); border-radius: 999px; color: var(--doc-muted); font-size: 11.5px; }
+.sourcePage { color: var(--doc-ink); font-weight: 650; }
+
+.aiDisclaimer { margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--doc-line); color: var(--doc-muted); font-size: 11.5px; line-height: 1.6; }
+
+@media (prefers-reduced-motion: reduce) {
+  .progressBar { transition: none; }
+  .progressBar[data-indeterminate] { animation: none; width: 100%; opacity: .45; }
+}
+
+/* Hinweis, welche Quellen eine Generierung blockieren. Das Backend nennt sie bei
+   SOURCES_NOT_READY; ohne diesen Hinweis bliebe unklar, wo man nachsehen muss. */
+.blockingHint { margin-top: var(--space-2); color: var(--doc-muted); font-size: 12.5px; line-height: 1.6; }
+.blockingHint a { color: var(--doc-accent-b); font-weight: 650; }
+.blockingHint ul { margin: var(--space-2) 0; padding-left: var(--space-5); list-style: disc; }
+.blockingHint li { line-height: 1.6; }

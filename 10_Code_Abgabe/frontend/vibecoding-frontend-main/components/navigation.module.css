@@ -1,0 +1,41 @@
+.sidebar { position: sticky; top: 0; width: var(--nav-expanded); height: 100svh; flex-shrink: 0; display: flex; flex-direction: column; padding: var(--space-8) var(--space-4) var(--space-5); background: var(--paper); border-right: 1px solid var(--line-strong); box-shadow: 16px 0 40px -24px rgba(0, 0, 0, 0.65); overflow-y: auto; transition: width var(--motion); }
+.sidebar[data-collapsed="true"] { width: var(--nav-collapsed); padding-inline: var(--space-2); }
+.brand { display: block; width: fit-content; padding-inline: var(--space-3); color: var(--ink); font-size: 30px; font-weight: 750; letter-spacing: -.075em; line-height: 1; white-space: nowrap; }
+.brandDot { color: var(--signal); }
+.toggle { display: flex; gap: var(--space-3); align-items: center; min-height: 40px; margin: var(--space-6) 0 var(--space-6); padding-inline: var(--space-3); color: var(--muted); font-size: 11px; text-align: left; }
+.toggle > span:first-child { font-size: 20px; }
+.toggle:hover { color: var(--ink); background: var(--line); }
+.navigation { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.indexLabel { margin: 0 var(--space-3) var(--space-4); color: var(--muted); font: 500 10px/1.5 var(--font-geist-mono), monospace; letter-spacing: .07em; }
+.navigation nav a { position: relative; display: flex; gap: var(--space-4); align-items: center; min-height: 49px; padding: var(--space-3); color: var(--muted); border-bottom: 1px solid transparent; border-radius: var(--radius-control); font-size: var(--font-meta); transition: color var(--motion), border-color var(--motion), background var(--motion); }
+.navigation nav a:hover { color: var(--ink); background: rgba(255, 255, 255, 0.05); border-bottom-color: transparent; }
+.navigation nav a[aria-current="page"] { color: var(--paper); background: var(--signal); font-weight: 650; box-shadow: var(--glow-signal); }
+.navNumber { font: 500 var(--font-micro)/1.5 var(--font-geist-mono), monospace; }
+.account { margin-top: auto; padding-top: var(--space-12); }
+.sidebar[data-collapsed="true"] .brand { padding-inline: var(--space-3); }
+.sidebar[data-collapsed="true"] .toggle { justify-content: center; padding: 0; }
+.sidebar[data-collapsed="true"] .indexLabel { margin-inline: 0; text-align: center; font-size: 9px; }
+.sidebar[data-collapsed="true"] nav a { justify-content: center; padding-inline: 0; }
+.profileArea { display: grid; gap: var(--space-3); padding-top: var(--space-4); border-top: var(--border); }
+.profile { display: flex; align-items: center; gap: var(--space-3); min-width: 0; color: var(--ink); }
+.profile > span { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; background: var(--forest); color: var(--ink); font-size: var(--font-meta); font-weight: 600; }
+.profile > div { min-width: 0; }
+.profile strong { display: block; font-size: var(--font-meta); font-weight: 550; overflow: hidden; text-overflow: ellipsis; }
+.profile small { display: block; overflow: hidden; text-overflow: ellipsis; font-size: 11px; color: var(--muted); }
+.logoutButton { composes: secondary from "./ui/system.module.css"; min-height: 36px; padding: var(--space-2); font-size: 11px; }
+.profileCompact .profile { justify-content: center; }
+.profileCompact .logoutButton { font-size: 19px; }
+.mobileBar, .drawer { display: none; }
+.mobileToggle { composes: secondary from "./ui/system.module.css"; gap: var(--space-3); padding-inline: var(--space-3); min-height: 40px; }
+.srOnly { composes: srOnly from "./ui/system.module.css"; }
+@media (max-width: 767px) {
+  .sidebar { display: none; }
+  .mobileBar { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) var(--space-5); background: var(--canvas); border-bottom: var(--border); }
+  .brand { padding: 0; font-size: 26px; }
+  .drawer[open] { display: block; position: fixed; inset: 0 0 0 auto; width: min(360px, 92vw); height: 100svh; max-width: none; max-height: none; margin: 0; border: 0; padding: 0; background: var(--canvas); }
+  .drawer::backdrop { background: #07151099; }
+  .drawerContent { min-height: 100%; display: flex; flex-direction: column; padding: var(--space-5); }
+  .drawerHeader { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-12); }
+  .navigation nav a { min-height: 55px; }
+  .account { padding-top: var(--space-10); }
+}

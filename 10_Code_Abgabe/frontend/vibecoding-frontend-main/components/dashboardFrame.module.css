@@ -1,0 +1,240 @@
+.shell {
+  color-scheme: light;
+  --ink: var(--app-ink);
+  --muted: var(--app-muted);
+  --paper: var(--app-surface);
+  --canvas: var(--app-bg);
+  --line: var(--app-line);
+  --forest: var(--app-purple);
+  --signal: var(--app-purple);
+  --radius-control: 9px;
+  --radius-panel: 14px;
+  --content-width: 1320px;
+  --page-gutter: clamp(16px, 1.8vw, 28px);
+  --uv-radius-hero: 14px;
+  --uv-radius-lg: 12px;
+  --uv-radius-md: 10px;
+  --uv-shadow-card: 0 3px 16px rgba(83, 111, 166, .035);
+  --uv-border: var(--app-line);
+  --dash-bg: var(--brand-app-bg);
+  --dash-ink: var(--brand-ink);
+  --dash-muted: var(--brand-muted);
+  --dash-line: var(--brand-line);
+  --dash-accent-a: var(--brand-teal);
+  --dash-accent-b: var(--brand-teal-dark);
+  --dash-surface: var(--brand-surface);
+  position: relative;
+  display: flex;
+  height: 100svh;
+  background: var(--dash-bg);
+  color: var(--dash-ink);
+  font-family: var(--font-inter), var(--font-geist-sans), sans-serif;
+}
+
+/* Global atmosphere for the whole authenticated shell: the delivered local asset
+   (public/brand/app-background.png — soft cyan/purple light fields), fixed to the
+   viewport and sitting behind the sidebar/topbar/content. A soft white wash sits on
+   top of the photo so it reads as atmospheric light rather than a wallpaper — the
+   sidebar/topbar are translucent "glass" above it (see .sidebar/.topbar) instead of
+   opaque, so the same light continues underneath them instead of cutting off. */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--dash-bg);
+  background-image:
+    linear-gradient(rgba(248, 251, 255, .78), rgba(248, 251, 255, .78)),
+    url("/brand/app-background.png");
+  /* A fixed, more moderate scale instead of `cover` — `cover` was upscaling the
+     source ~2.5–3x on wide viewports (soft, but visibly less crisp). The image's
+     own edges already fade to the same near-white as --dash-bg, so the smaller
+     scale leaves no visible seam where it stops covering the viewport. */
+  background-size: cover, 1600px auto;
+  background-position: center, center;
+}
+
+.sidebar, .workspace { position: relative; z-index: 1; }
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  flex-shrink: 0;
+  height: 100%;
+  background: linear-gradient(var(--app-veil-soft), var(--app-veil-soft)), url("/brand/sidebar-background.png") left bottom / 100% auto no-repeat, var(--app-veil);
+  backdrop-filter: blur(22px) saturate(1.1);
+  -webkit-backdrop-filter: blur(22px) saturate(1.1);
+  border-right: 1px solid var(--uv-border);
+  transition: width var(--motion);
+}
+.brandRow { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); flex-shrink: 0; min-height: 80px; padding-inline: var(--space-6); border-bottom: 1px solid var(--uv-border); }
+.sidebar[data-collapsed="true"] .brandRow { justify-content: center; padding-inline: var(--space-2); }
+.brand { display: flex; align-items: center; gap: var(--space-3); min-width: 0; flex: 0 1 auto; color: var(--dash-ink); text-decoration: none; }
+
+.sidebarBody { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: var(--space-6) var(--space-4) var(--space-5); overflow-y: auto; }
+.sidebarBody nav { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.collapseToggle { display: grid; flex-shrink: 0; place-items: center; width: 36px; height: 36px; margin-bottom: var(--space-4); padding: 0; color: var(--dash-ink); background: var(--app-veil-soft); border: 1px solid var(--uv-border); border-radius: 11px; cursor: pointer; transition: background var(--motion), color var(--motion), border-color var(--motion); }
+.sidebar[data-collapsed="true"] .collapseToggle { margin-inline: auto; }
+.collapseToggle:hover { color: var(--dash-ink); background: var(--app-veil-strong); border-color: var(--dash-muted); }
+.collapseToggle svg { width: 17px; height: 17px; transition: transform var(--motion); }
+.collapseToggle svg[data-flip="true"] { transform: rotate(180deg); }
+
+.navItem { position: relative; display: flex; align-items: center; gap: var(--space-3); min-height: 48px; padding-inline: var(--space-4); color: var(--app-muted); border-radius: 12px; font-size: 14px; font-weight: 550; text-decoration: none; transition: background var(--motion), color var(--motion); }
+.navItem svg { width: 21px; height: 21px; flex-shrink: 0; stroke-width: 1.8; }
+.navItem:hover { background: var(--app-veil-soft); color: var(--dash-ink); }
+.navItem[data-active="true"] { color: var(--uv-teal-fg); background: rgba(20, 184, 166, .09); font-weight: 650; }
+.navItem[data-active="true"] svg { stroke-width: 2; }
+.navItem[data-active="true"]::before { content: ""; position: absolute; left: -4px; top: 50%; width: 3px; height: 30px; background: var(--uv-teal-fg); border-radius: 999px; transform: translateY(-50%); }
+.navBadge { margin-left: auto; padding: 2px 8px; color: var(--uv-teal-fg); background: var(--uv-teal-bg); border-radius: 999px; font-size: 10.5px; font-weight: 700; letter-spacing: .02em; }
+
+.sidebarFooter { display: flex; flex-direction: column; gap: var(--space-2); margin-top: auto; padding-top: var(--space-4); }
+.profileRow { display: flex; align-items: center; gap: var(--space-3); min-height: 50px; padding: var(--space-1) var(--space-2); color: var(--dash-ink); background: var(--app-veil-soft); border-radius: 13px; text-decoration: none; transition: background var(--motion); }
+.profileRow:hover { background: var(--app-veil); }
+.gear { flex-shrink: 0; width: 17px; height: 17px; color: var(--dash-muted); }
+
+/* Secondary by default (muted, not alarming red) — only reads as a "logout" action on
+   hover/focus, per the sidebar's calm, Notion/Linear-like navigation feel. */
+.logoutItem { display: flex; align-items: center; gap: var(--space-3); min-height: 42px; padding-inline: var(--space-4); color: var(--dash-muted); background: transparent; border: 0; border-radius: 12px; font-size: 13.5px; font-weight: 550; cursor: pointer; transition: background var(--motion), color var(--motion); }
+.logoutItem svg { width: 17px; height: 17px; flex-shrink: 0; }
+.logoutItem:hover:not(:disabled) { color: var(--app-danger); background: rgba(220, 38, 38, 0.07); }
+.logoutItem:disabled { opacity: .6; cursor: not-allowed; }
+
+/* Mobile drawer controls: hidden on desktop, where the sidebar is permanent. */
+.menuButton { display: none; place-items: center; flex-shrink: 0; width: 42px; height: 42px; padding: 0; color: var(--dash-ink); background: var(--app-veil-soft); border: 0; border-radius: 12px; cursor: pointer; transition: background var(--motion); }
+.menuButton:hover { background: var(--app-veil-strong); }
+.menuButton svg { width: 20px; height: 20px; }
+.backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(16, 23, 43, 0.45); }
+
+/* The global focus ring is a light lime that is hard to see on the white shell. */
+.shell :is(.brand, .navItem, .logoutItem, .profileRow, .collapseToggle, .menuButton, .bell, .profileChip):focus-visible { outline: 2px solid var(--dash-accent-b); outline-offset: 2px; }
+
+/* One continuous atmospheric surface behind BOTH the topbar and the main content —
+   no separate opaque header bar. The halo that used to live on .main alone now
+   starts above it (extends behind the topbar too), so there is no visible seam
+   between "header" and "page background" like a conventional admin dashboard. */
+.workspace {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  background: radial-gradient(1300px 1000px at 50% -6%, var(--app-veil-soft) 0%, var(--app-veil-faint) 42%, rgba(255, 255, 255, 0) 68%);
+}
+/* Flex + space-between (not a symmetric 1fr/auto/1fr grid): the search sits at its
+   natural width right after the sidebar, and the user cluster sits at the far right,
+   with the gap between them left deliberately empty instead of both being pushed
+   toward the center of the topbar. Fully transparent — it is not a separate header
+   surface, just where the search/notification/profile controls float. */
+/* Same content column as .home (1260px, centered) — one shared width/centering
+   rule here instead of the search happening to sit flush at the padding edge
+   while the hero/cards are centered narrower than the available space. Must be
+   kept in sync with the max-width in home.module.css's .home rule. */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  min-height: 76px;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: calc(1260px + 2 * var(--page-gutter));
+  margin-inline: auto;
+  padding: 0 var(--page-gutter);
+  background: transparent;
+}
+
+.search { position: relative; display: flex; align-items: center; width: 100%; max-width: 580px; }
+.search svg { position: absolute; left: var(--space-4); width: 20px; height: 20px; color: var(--dash-muted); pointer-events: none; }
+.search input { width: 100%; min-height: 46px; padding-left: 46px; padding-right: 62px; color: var(--dash-ink); background: var(--app-veil); border: 1px solid var(--uv-border); border-radius: 14px; font-size: 14.5px; box-shadow: 0 2px 10px rgba(40, 55, 100, .04); transition: border-color var(--motion), background var(--motion); }
+.search input::placeholder { color: var(--dash-muted); }
+.search input:focus-visible { outline: none; background: var(--app-surface); border-color: var(--dash-accent-b); box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.14); }
+.searchHint { position: absolute; right: var(--space-3); display: grid; place-items: center; min-width: 34px; height: 26px; padding: 0 6px; color: var(--dash-muted); background: var(--app-veil-strong); border: 1px solid var(--uv-border); border-radius: 8px; font-family: var(--font-geist-mono), monospace; font-size: 11px; font-weight: 600; pointer-events: none; }
+
+.topbarRight { display: flex; align-items: center; flex-shrink: 0; margin-left: auto; min-width: 0; gap: var(--space-5); }
+.bell { position: relative; display: grid; place-items: center; width: 43px; height: 43px; color: var(--dash-muted); background: var(--app-veil-soft); border: 0; border-radius: 13px; cursor: pointer; transition: background var(--motion), color var(--motion); }
+.bell:hover { background: var(--app-veil-strong); color: var(--dash-ink); }
+.bell svg { width: 20px; height: 20px; }
+.dot { position: absolute; top: 8px; right: 9px; width: 8px; height: 8px; background: #ef4444; border: 2px solid var(--dash-surface); border-radius: 50%; }
+
+.profileChip { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-1) var(--space-2) var(--space-1) var(--space-1); color: var(--dash-ink); border-radius: 999px; text-decoration: none; transition: background var(--motion); }
+.profileChip:hover { background: var(--dash-bg); }
+/* Circular avatar — width/height/aspect-ratio pinned so it stays a true circle
+   regardless of the initial's glyph width. The topbar chip uses a larger size. */
+.avatar { display: grid; place-items: center; width: 38px; height: 38px; aspect-ratio: 1; flex-shrink: 0; color: var(--app-on-accent); background: linear-gradient(135deg, var(--dash-accent-a), var(--dash-accent-b)); border-radius: 50%; font-size: 14px; font-weight: 700; }
+.profileChip .avatar { width: 44px; height: 44px; font-size: 15px; }
+.identity { display: flex; flex-direction: column; min-width: 0; max-width: 220px; line-height: 1.3; text-align: left; }
+.identity strong, .identity small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.identity strong { font-size: 14.5px; font-weight: 650; }
+.identity small { font-size: 12.5px; color: var(--dash-muted); }
+.chevronDown { flex-shrink: 0; width: 17px; height: 17px; margin-left: var(--space-2); color: var(--dash-muted); }
+
+/* Transparent — the halo lives on .workspace now, spanning topbar + main as one
+   continuous surface (see .workspace above). */
+.main { flex: 1; min-width: 0; min-height: 0; padding: var(--space-6) var(--page-gutter) var(--space-10); overflow-y: auto; background: transparent; }
+
+.sidebar[data-collapsed="true"] { width: 76px; }
+.sidebar[data-collapsed="true"] .sidebarBody { padding-inline: var(--space-2); }
+.sidebar[data-collapsed="true"] .navItem span, .sidebar[data-collapsed="true"] .logoutItem span, .sidebar[data-collapsed="true"] .identity, .sidebar[data-collapsed="true"] .gear { display: none; }
+.sidebar[data-collapsed="true"] .navItem, .sidebar[data-collapsed="true"] .logoutItem { justify-content: center; padding-inline: 0; }
+.sidebar[data-collapsed="true"] .profileRow { justify-content: center; padding-inline: 0; }
+
+/* Compact (keep 900px in sync with COMPACT_MEDIA_QUERY in shellState.ts): the sidebar
+   no longer reserves a column. It becomes an overlay drawer above the content, so the
+   content always gets the full width. The saved desktop "collapsed" preference is not
+   applied here. */
+@media (max-width: 900px) {
+  .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 50; width: min(288px, 86vw); visibility: hidden; transform: translateX(-100%); transition: transform var(--motion), visibility 0s linear var(--motion), box-shadow var(--motion); }
+  .sidebar[data-drawer-open="true"] { visibility: visible; transform: none; box-shadow: 0 24px 60px -12px rgba(16, 23, 43, 0.35); transition: transform var(--motion), visibility 0s, box-shadow var(--motion); }
+  .menuButton { display: grid; }
+  .identity { display: none; }
+  .search { display: none; }
+  .topbar { gap: var(--space-3); }
+  .topbarRight { gap: var(--space-3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidebar, .sidebar[data-drawer-open="true"] { transition: none; }
+}
+@media (max-width: 640px) {
+  .topbar { padding-inline: var(--space-4); }
+  .main { padding: var(--space-6) var(--space-4) var(--space-8); }
+}
+
+/* Compact proportions keep the navigation and page on the same baseline. */
+.brandRow { min-height: 76px; padding-inline: 22px; border-bottom: 0; }
+.sidebarBody { padding: 8px 16px 16px; }
+.sidebarBody nav { gap: 5px; }
+.collapseToggle { width: 28px; height: 28px; margin-bottom: 10px; border: 0; background: transparent; color: #7180a2; }
+.navItem { min-height: 43px; padding-inline: 13px; border-radius: 8px; color: var(--app-muted); font-size: 13px; gap: 14px; }
+.navItem svg { width: 18px; height: 18px; }
+.navBadge { color: var(--app-purple); background: var(--app-purple-tint); padding: 2px 5px; border-radius: 5px; font-size: 9px; }
+.profileRow { background: transparent; padding-inline: 2px; }
+.identity strong { font-size: 12px; }
+.identity small { font-size: 10px; }
+.logoutItem { min-height: 32px; font-size: 12px; }
+.logoutItem svg { color: #ec6d88; }
+.topbar { min-height: 72px; max-width: calc(1320px + 2 * var(--page-gutter)); }
+.search { max-width: 620px; }
+.search input { min-height: 42px; border-radius: 9px; font-size: 12px; }
+.searchHint { height: 23px; border: 0; border-radius: 5px; background: var(--app-neutral-tint); }
+.bell { width: 38px; height: 38px; border-radius: 50%; background: var(--app-surface); border: 1px solid var(--app-line); }
+.profileChip .avatar { width: 39px; height: 39px; }
+.topbarRight { gap: 16px; }
+.main { padding-top: 0; padding-bottom: 20px; }
+.shell :is(a, button, input, textarea, select, [tabindex]):focus-visible { outline: 2px solid var(--app-purple); outline-offset: 3px; }
+@media (max-width: 900px) { .sidebar { width: min(288px, 86vw); } }
+@media (max-width: 640px) { .main { padding: 0 10px 16px; } }
+
+/* Dark mode: the atmosphere and sidebar artwork are light-mode assets — pastel
+   PNGs under a white veil. Darkening them only turns them muddy, so they are
+   dropped here in favour of a faint brand glow on the flat dark ground, which
+   keeps the depth without the washed-out patch. */
+:global([data-theme="dark"]) .atmosphere {
+  background-image:
+    radial-gradient(1200px 820px at 16% -12%, rgba(20, 184, 166, .10), transparent 58%),
+    radial-gradient(1000px 720px at 88% 4%, rgba(139, 92, 246, .11), transparent 60%);
+}
+:global([data-theme="dark"]) .sidebar {
+  background: var(--app-surface);
+  border-right: 1px solid var(--app-line);
+}

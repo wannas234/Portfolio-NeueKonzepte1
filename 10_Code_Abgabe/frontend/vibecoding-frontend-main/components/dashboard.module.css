@@ -1,0 +1,23 @@
+.shell { display: flex; min-height: 100svh; color: var(--ink); background: var(--paper); font-family: var(--font-geist-sans), sans-serif; }
+.workspace { flex: 1; min-width: 0; background: var(--canvas); }
+.main { padding: var(--space-10) var(--page-gutter) var(--space-8); }
+.main:has(> [data-full-bleed]) { padding: 0; }
+.topbar { position: sticky; top: 0; z-index: 5; min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); padding: var(--space-4) var(--page-gutter); background: rgba(20, 26, 18, 0.78); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-strong); font-size: var(--font-meta); }
+.topbar div > span { color: var(--muted); margin-right: var(--space-3); }
+.topbar strong { font-weight: 500; }
+.topbar > small { font: 500 10px/1.5 var(--font-geist-mono), monospace; letter-spacing: .08em; color: var(--muted); }
+.dashboard { max-width: var(--content-width); margin-inline: auto; min-width: 0; }
+.intro { display: flex; justify-content: space-between; align-items: end; gap: var(--space-8); margin-bottom: var(--space-10); }
+.intro h1 { margin-top: var(--space-4); font-size: var(--font-page); font-weight: 550; line-height: var(--leading-tight); letter-spacing: -.065em; overflow-wrap: anywhere; }
+.intro h1 + p { max-width: 54ch; margin-top: var(--space-5); color: var(--muted); font-size: var(--font-body); }
+.eyebrow { composes: micro from "./ui/system.module.css"; color: var(--muted); }
+.notice { padding: var(--space-3) 0 var(--space-3) var(--space-4); border-left: 3px solid var(--line); margin-block: var(--space-6); font-size: var(--font-meta); color: var(--muted); }
+.notice[role="alert"] { border-color: var(--error); color: var(--error); }
+.sectionHeader { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-6); }
+.sectionHeader h2 { font-size: var(--font-section); line-height: 1.1; letter-spacing: -.045em; font-weight: 550; }
+.sectionHeader h2 small { margin-left: var(--space-3); color: var(--muted); font-size: var(--font-meta); letter-spacing: 0; }
+.sectionHeader > a { font-size: var(--font-meta); text-decoration: underline; text-underline-offset: 5px; }
+.sectionHeader > small { font: 500 var(--font-micro)/1.5 var(--font-geist-mono), monospace; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.dashboardFooter { display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); padding-top: var(--space-5); margin-top: var(--space-12); border-top: var(--border); color: var(--muted); font-size: 11px; }
+.badge { display: grid; place-items: center; width: 48px; height: 48px; background: var(--canvas); color: var(--forest); font: 500 var(--font-meta)/1 var(--font-geist-mono), monospace; }
+@media (max-width: 767px) { .shell { display: block; } .topbar { min-height: 45px; padding-block: var(--space-3); } .topbar div > span { display: none; } .main { padding-top: var(--space-8); } .intro { flex-direction: column; align-items: start; gap: var(--space-6); } .intro h1 { font-size: clamp(42px, 10vw, 64px); } }

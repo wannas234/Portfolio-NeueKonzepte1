@@ -1,0 +1,295 @@
+/* Dashboard. Hero -> three summary cards -> optional attention card -> Lern-Tools.
+   One small system: .card (section), .cardHead (icon + heading + action), rows
+   (.docRow, .docGrid), .empty, .chip (status). Rows stay flat until hovered. */
+
+.home {
+  --ink: var(--brand-ink);
+  --muted: var(--brand-muted);
+  --line: var(--brand-line);
+  --line-soft: var(--app-neutral-tint);
+  --tint: var(--brand-app-bg);
+  --accent-a: var(--brand-teal);
+  --accent-b: var(--brand-teal-dark);
+  --accent-soft: var(--brand-teal-soft);
+  --accent-line: var(--brand-teal-soft-line);
+  --danger: var(--app-danger);
+  --danger-soft: var(--app-danger-soft);
+  max-width: 1260px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  color: var(--ink);
+}
+
+/* Hero: the emotional focal point, one continuous full-bleed surface (not a panel
+   with a separate placeholder box). The delivered local asset (public/brand/hero-
+   background.jpg) is the default; `--hero-image` can override it later with a new
+   asset (or another url()) with no markup change. A left-to-right scrim keeps the
+   greeting legible over the photo. */
+.hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 320px;
+  border-radius: var(--uv-radius-hero);
+  color: var(--app-on-media);
+  box-shadow: var(--uv-shadow-hero), inset 0 0 0 1px var(--app-veil-faint);
+}
+.heroImage {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 46%;
+  background-color: #0d1330;
+  background-image: var(--hero-image, url("/brand/hero-background.jpg"));
+}
+/* Left: strong dark navy for perfect text contrast. Middle: much more transparent,
+   so the photo reads clearly. Right: only a light dimming, just enough for the claim
+   text to stay legible over bright sky. */
+.heroScrim { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(3, 13, 31, .90) 0%, rgba(3, 13, 31, .70) 25%, rgba(3, 13, 31, .28) 52%, rgba(3, 13, 31, .10) 72%, rgba(3, 13, 31, .24) 100%); }
+.heroContent { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--space-4); max-width: min(54%, 630px); min-width: 0; padding: 52px 40px 40px; }
+.heroEyebrow { color: var(--brand-cyan); font-size: 12.5px; font-weight: 700; letter-spacing: .14em; }
+.hero h1 { color: var(--app-on-media); font-size: clamp(2rem, 3.4vw, 2.875rem); font-weight: 750; letter-spacing: -.03em; line-height: 1.12; overflow-wrap: anywhere; }
+.heroTitleSkeleton { width: min(320px, 70%); height: clamp(2rem, 3vw, 2.6rem); background: var(--app-veil-faint); border-radius: 10px; }
+.heroLead { color: var(--app-on-media-soft); font-size: 19px; font-weight: 400; }
+
+/* Glass surface: dark, translucent, blurred — a deliberately larger accent detail. */
+.heroQuote { display: flex; align-items: flex-start; gap: var(--space-4); max-width: 50ch; width: 100%; margin-top: var(--space-1); padding: var(--space-5); background: rgba(8, 14, 32, .42); border: 1px solid rgba(127, 227, 212, .28); border-radius: var(--uv-radius-md); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 8px 24px rgba(6, 12, 30, .2); }
+.heroQuoteMark { flex-shrink: 0; color: var(--brand-cyan); font-size: 34px; font-weight: 700; line-height: .7; }
+.heroQuote div { display: flex; flex-direction: column; gap: 3px; }
+.heroQuote p { color: var(--app-on-media-soft); font-size: 15px; font-style: italic; line-height: 1.5; }
+.heroQuote cite { color: rgba(244, 246, 255, .68); font-size: 12.5px; font-style: normal; }
+
+.heroTagline { position: absolute; z-index: 1; top: 50%; right: 44px; margin: 0; color: var(--app-on-accent); font-size: 18px; font-weight: 600; font-style: italic; line-height: 1.45; text-align: right; text-shadow: 0 2px 14px rgba(0, 0, 0, .35); transform: translateY(-50%); }
+.heroTagline span { display: block; transform: rotate(-2deg); }
+.heroTagline .heroTaglineLast { color: #6fe3d0; }
+
+.summaryRow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); align-items: stretch; }
+
+/* One card family: same radius/border/shadow/padding for all three main cards, so
+   they read as one system instead of separately-styled boxes. */
+.card { display: flex; flex-direction: column; min-width: 0; padding: var(--space-6); background: var(--uv-surface); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--uv-border); border-radius: var(--uv-radius-lg); box-shadow: var(--uv-shadow-card); }
+.attentionCard[data-tone="failed"] { border-color: var(--app-rose-line); box-shadow: inset 4px 0 0 #e39a91, var(--uv-shadow-card); }
+.attentionCard[data-tone="info"] { box-shadow: inset 4px 0 0 #a9c5f7, var(--uv-shadow-card); }
+.cardHead { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-5); }
+.cardHead h2 { display: flex; align-items: center; gap: var(--space-3); font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
+.cardIcon { display: grid; place-items: center; width: 38px; height: 38px; color: var(--uv-teal-fg); background: var(--uv-teal-bg); border-radius: var(--uv-radius-tile); }
+.cardIcon[data-tone="purple"] { color: var(--uv-purple-fg); background: var(--uv-purple-bg); }
+.cardIcon[data-tone="blue"] { color: var(--uv-blue-fg); background: var(--uv-blue-bg); }
+.cardIcon svg { width: 20px; height: 20px; }
+.headLink { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; color: var(--accent-b); font-size: 12.5px; font-weight: 600; text-decoration: none; }
+.headLink svg { width: 13px; height: 13px; transition: transform var(--motion); }
+.headLink:hover { text-decoration: underline; text-underline-offset: 3px; }
+.headLink:hover svg { transform: translateX(2px); }
+.more a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Nächster Termin */
+.nextEvent { display: flex; flex-direction: column; gap: var(--space-4); flex: 1; }
+.nextEventBody { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.eventTitle { font-size: 17px; font-weight: 700; letter-spacing: -.01em; overflow-wrap: anywhere; }
+.dateBadge { display: grid; place-items: center; flex-shrink: 0; width: 52px; height: 56px; color: var(--accent-b); background: var(--accent-soft); border: 1px solid var(--accent-line); border-radius: 14px; line-height: 1.1; }
+.dateBadge b { font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+.dateBadge small { color: var(--accent-b); font-size: 10.5px; font-weight: 650; text-transform: uppercase; opacity: .85; }
+
+/* Aktueller Kurs */
+.currentCourse { display: flex; flex-direction: column; gap: var(--space-4); flex: 1; }
+.currentCourseRow { display: flex; align-items: center; gap: var(--space-4); }
+.courseTitle { overflow: hidden; font-size: 16px; font-weight: 700; letter-spacing: -.01em; text-overflow: ellipsis; white-space: nowrap; }
+.courseBadge { display: grid; place-items: center; flex-shrink: 0; width: 58px; height: 58px; color: var(--app-on-accent); border-radius: 15px; font-size: 18px; font-weight: 700; letter-spacing: -.02em; }
+.courseBadge[data-tone="green"] { background: linear-gradient(135deg, #34d399, #0e8850); }
+.courseBadge[data-tone="amber"] { background: linear-gradient(135deg, #fbbf24, #d97706); }
+.courseBadge[data-tone="sage"] { background: linear-gradient(135deg, #a3b899, #5f7a52); }
+.courseBadge[data-tone="blue"] { background: linear-gradient(135deg, #60a5fa, var(--app-blue)); }
+.courseBadge[data-tone="rose"] { background: linear-gradient(135deg, #fb7185, #e11d48); }
+.courseBadge[data-tone="violet"] { background: linear-gradient(135deg, var(--brand-purple), var(--brand-purple-dark)); }
+.courseBadge[data-tone="teal"] { background: linear-gradient(135deg, #2dd4bf, #0f766e); }
+.courseBadge[data-tone="coral"] { background: linear-gradient(135deg, #fb923c, #ea580c); }
+.courseBadge[data-tone="indigo"] { background: linear-gradient(135deg, #818cf8, #4338ca); }
+
+.rowBody { display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; }
+.rowMeta { color: var(--accent-b); font-size: 11.5px; font-weight: 650; letter-spacing: .03em; text-transform: uppercase; }
+.rowSub { overflow: hidden; color: var(--muted); font-size: 12.5px; line-height: 1.5; text-overflow: ellipsis; white-space: nowrap; }
+.rowDetail { color: var(--danger); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+
+.primaryPill { align-self: flex-start; display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-top: auto; min-height: 44px; padding: 0 var(--space-5); color: var(--app-on-accent); background: linear-gradient(135deg, var(--accent-a), var(--accent-b)); border-radius: 999px; font-size: 13.5px; font-weight: 650; text-decoration: none; transition: box-shadow 320ms var(--uv-ease), background 320ms var(--uv-ease), transform 320ms var(--uv-ease); }
+.primaryPill:hover { box-shadow: 0 10px 22px -12px rgba(13, 148, 136, .5); }
+/* "Aktueller Kurs" CTA: a wide, dezent tinted lavender surface rather than a bold
+   primary button — the course avatar/badge already carries the violet accent. */
+.primaryPill[data-tone="purple"] { align-self: stretch; min-height: 46px; color: var(--uv-purple-fg); background: var(--uv-purple-bg); border-radius: var(--uv-radius-md); box-shadow: none; }
+.primaryPill[data-tone="purple"]:hover { background: rgba(116, 87, 245, .16); }
+.pillIcon { width: 15px; height: 15px; }
+
+/* Zuletzt hinzugefügt */
+.recentDoc { display: flex; align-items: center; gap: var(--space-4); flex: 1; padding: var(--space-3); border: 1px solid var(--uv-border); border-radius: var(--uv-radius-md); color: inherit; text-decoration: none; transition: background 320ms var(--uv-ease), border-color 320ms var(--uv-ease), box-shadow 320ms var(--uv-ease), transform 320ms var(--uv-ease); }
+.recentDoc:hover { background: var(--app-veil); border-color: rgba(110, 125, 170, .3); box-shadow: 0 10px 26px rgba(40, 55, 100, .07); }
+.docType { display: grid; place-items: center; flex-shrink: 0; width: 46px; height: 46px; color: var(--brand-rose); background: var(--brand-rose-soft); border-radius: 12px; font-size: 10.5px; font-weight: 700; letter-spacing: .02em; }
+.docName { overflow: hidden; font-size: 14.5px; font-weight: 700; letter-spacing: -.01em; text-overflow: ellipsis; white-space: nowrap; }
+.chip { flex-shrink: 0; padding: 3px 10px; color: var(--muted); background: var(--line-soft); border-radius: 999px; font-size: 11px; font-weight: 650; white-space: nowrap; }
+.chip[data-tone="ready"] { color: var(--uv-teal-fg); background: var(--uv-teal-bg); }
+.chip[data-tone="active"] { color: var(--uv-blue-fg); background: var(--uv-blue-bg); }
+.chip[data-tone="failed"] { color: var(--danger); background: var(--danger-soft); }
+
+.docGrid { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: var(--space-2) var(--space-3); }
+.docRow { display: flex; align-items: center; gap: var(--space-4); min-width: 0; min-height: 52px; padding: var(--space-3) var(--space-4); color: inherit; border: 1px solid var(--uv-border); border-radius: var(--uv-radius-md); text-decoration: none; transition: background 320ms var(--uv-ease), border-color 320ms var(--uv-ease), box-shadow 320ms var(--uv-ease), transform 320ms var(--uv-ease); }
+.docRow:hover { background: var(--app-veil); border-color: rgba(110, 125, 170, .3); box-shadow: 0 10px 26px rgba(40, 55, 100, .07); }
+.docRow[data-attention="failed"] .docType { color: var(--danger); background: var(--danger-soft); }
+
+.more { margin-top: var(--space-4); color: var(--muted); font-size: 12.5px; }
+.more a { color: var(--accent-b); font-weight: 650; text-decoration: none; }
+
+/* Empty state: barely-there tint, not a boxed placeholder — one calm surface, not a
+   box drawn inside the card's own box. */
+.empty { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); flex: 1; padding: var(--space-4) var(--space-2); }
+.emptyIcon { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; color: var(--uv-teal-fg); background: var(--uv-teal-bg); border-radius: var(--uv-radius-tile); }
+.emptyIcon svg { width: 21px; height: 21px; }
+.emptyBody { flex: 1; min-width: 180px; }
+.emptyBody strong { font-size: 14.5px; font-weight: 700; }
+.emptyBody p { margin-top: 2px; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+/* Clean outlined teal button, not a filled pill. */
+.ctaLink { flex-shrink: 0; padding: var(--space-2) var(--space-4); color: var(--accent-b); background: transparent; border: 1.5px solid var(--accent-b); border-radius: 999px; font-size: 13px; font-weight: 650; text-decoration: none; transition: background var(--motion), color var(--motion); }
+.ctaLink:hover { background: var(--accent-b); color: var(--app-on-accent); }
+
+.blockError { padding: var(--space-4) var(--space-5); color: var(--danger); background: var(--app-rose-tint); border-radius: 14px; font-size: 13px; }
+.blockError p { margin-bottom: var(--space-2); }
+.textButton { padding: 0; color: var(--accent-b); background: none; border: 0; font-size: 13px; font-weight: 650; cursor: pointer; }
+.textButton:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.skeletonRow { height: 64px; background: var(--tint); border-radius: 14px; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Lern-Tools: secondary actions, so the outer surface carries deliberately less
+   weight than the three main cards (more transparent, lighter shadow, less padding)
+   — closer to the background than a competing white block. */
+.toolsCard { padding: var(--space-5); background: var(--uv-surface-light); box-shadow: 0 8px 24px rgba(40, 55, 100, .045); }
+/* Lern-Tools header: a plain accent icon (not a boxed tile) and a slightly larger
+   title, since this section is a secondary shortcuts row, not a data card. */
+.toolsCard .cardHead h2 { font-size: 18px; }
+.toolsCard .cardIcon { width: 24px; height: 24px; background: none; border-radius: 0; }
+.toolsCard .cardIcon svg { width: 23px; height: 23px; }
+.toolsGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); }
+.toolCard { display: flex; align-items: center; gap: var(--space-4); min-height: 92px; padding: var(--space-4); border: 1px solid var(--uv-border); border-radius: var(--uv-radius-md); color: inherit; text-decoration: none; transition: background 340ms var(--uv-ease), border-color 340ms var(--uv-ease), box-shadow 340ms var(--uv-ease), transform 340ms var(--uv-ease); }
+.toolCard:hover { background: var(--app-veil-soft); border-color: rgba(110, 125, 170, .32); box-shadow: 0 14px 32px rgba(40, 55, 100, .09); }
+.toolIcon { display: grid; place-items: center; flex-shrink: 0; width: 58px; height: 58px; color: var(--uv-purple-fg); background: var(--uv-purple-bg); border-radius: 15px; }
+.toolIcon[data-icon="quiz"] { color: var(--uv-orange-fg); background: var(--uv-orange-bg); }
+.toolIcon[data-icon="summary"] { color: var(--uv-blue-fg); background: var(--uv-blue-bg); }
+.toolIcon svg { width: 30px; height: 30px; }
+.toolBody { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.toolBody strong { font-size: 14.5px; font-weight: 700; letter-spacing: -.01em; }
+.toolBody span { overflow: hidden; color: var(--muted); font-size: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.chevron { flex-shrink: 0; width: 18px; height: 18px; margin-left: auto; color: #a3a8c4; transition: transform var(--motion), color var(--motion); }
+.toolCard:hover .chevron { color: var(--accent-b); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .recentDoc:hover, .docRow:hover, .primaryPill:hover { transform: translateY(-2px); }
+  .toolCard:hover { transform: translateY(-3px); }
+}
+
+@media (max-width: 1100px) {
+  .summaryRow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .toolsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card { padding: var(--space-5); }
+  .heroContent { max-width: 68%; }
+}
+
+@media (max-width: 900px) {
+  .heroContent { max-width: 100%; }
+  .heroTagline { display: none; }
+  .summaryRow { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .hero { min-height: 0; border-radius: 20px; }
+  .heroContent { padding: var(--space-5); gap: var(--space-3); }
+  .card { padding: var(--space-5) var(--space-4); border-radius: 18px; }
+  .toolsGrid { grid-template-columns: 1fr; }
+  .docRow { flex-wrap: wrap; }
+  .docRow .chip { margin-left: calc(44px + var(--space-3)); }
+  .docName, .courseTitle, .rowSub { white-space: normal; overflow-wrap: anywhere; }
+  .empty { padding: var(--space-4); }
+  .ctaLink { display: inline-flex; align-items: center; min-height: 40px; }
+}
+
+/* Reference dashboard: panoramic hero, three summaries, four learning tools. */
+.home { max-width: 1320px; gap: 16px; }
+.hero { min-height: 290px; }
+.heroContent { padding: 38px 32px 28px; gap: 12px; }
+.hero h1 { font-size: clamp(28px, 3vw, 40px); }
+.heroEyebrow { font-size: 11px; letter-spacing: .04em; color: #39e3d3; }
+.heroLead { font-size: 17px; }
+.heroQuote { padding: 14px 18px; border-radius: 10px; }
+.heroQuote p { font-size: 12px; }
+.heroQuote cite { font-size: 10px; }
+.heroTagline { right: 35px; font-size: 17px; transform: translateY(-40%) rotate(-15deg); }
+.summaryRow { gap: 14px; }
+.card { padding: 18px; }
+.cardHead { margin-bottom: 18px; gap: 8px; }
+.cardHead h2 { gap: 8px; font-size: 13px; }
+.cardIcon { width: 24px; height: 24px; border-radius: 6px; }
+.cardIcon svg { width: 16px; height: 16px; }
+.headLink { font-size: 10px; }
+.eventTitle, .courseTitle, .docName { font-size: 14px; }
+.nextEvent { flex-direction: row; flex-wrap: wrap; }
+.nextEventBody { flex: 1; }
+.nextEvent .primaryPill { margin-left: auto; }
+.primaryPill { min-height: 40px; border-radius: 9px; font-size: 12px; }
+.primaryPill[data-tone="purple"] { min-height: 40px; }
+.recentDoc { border: 0; padding: 0; }
+.courseBadge { width: 50px; height: 50px; border-radius: 12px; }
+.toolsCard { padding: 18px; }
+.toolsCard .cardHead h2 { font-size: 15px; }
+.toolsGrid { gap: 12px; }
+.toolCard { min-height: 78px; gap: 12px; padding: 12px; background: var(--app-veil-soft); }
+.toolIcon { width: 44px; height: 44px; border-radius: 10px; }
+.toolIcon svg { width: 24px; height: 24px; }
+.toolBody strong { font-size: 12px; }
+.toolBody span { font-size: 11px; }
+.chevron { width: 12px; }
+@media (min-width: 1050px) { .summaryRow { grid-template-columns: repeat(3,minmax(0,1fr)); } .toolsGrid { grid-template-columns: repeat(4,minmax(0,1fr)); } }
+@media (max-width: 640px) { .heroContent { padding: 24px 20px; } .hero { min-height: 270px; } .heroQuote { max-width: 100%; } }
+
+/* Premium-Hinweis im Hero. Liegt in beiden Themes auf dem dunklen Bild-Overlay und
+   nutzt deshalb die medien-sicheren Farben statt der Flächen-Tokens, die umschlagen. */
+.heroPremium {
+  display: inline-flex;
+  align-items: center;
+  gap: 13px;
+  align-self: flex-start;
+  margin-top: var(--space-3);
+  padding: 10px 18px 10px 12px;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, .14), rgba(139, 92, 246, .14)), rgba(8, 14, 32, .52);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: var(--app-on-media);
+  text-decoration: none;
+  transition: border-color var(--motion), transform var(--motion), box-shadow var(--motion);
+}
+.heroPremium:hover {
+  border-color: rgba(34, 211, 238, .55);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(6, 12, 30, .45);
+}
+.heroPremiumMark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--brand-cyan), var(--brand-purple));
+  color: #061024;
+}
+.heroPremiumMark svg { width: 16px; height: 16px; }
+.heroPremiumText { display: flex; flex-direction: column; gap: 1px; line-height: 1.25; }
+.heroPremiumText strong { font-size: 13.5px; font-weight: 650; }
+.heroPremiumText small { font-size: 11.5px; color: var(--app-on-media-soft); }
+.heroPremiumArrow { color: var(--brand-cyan); transition: transform var(--motion); }
+.heroPremium:hover .heroPremiumArrow { transform: translateX(3px); }
+/* Heller Fokusring: der Hinweis liegt auf dem Bild, ein Theme-Token wäre dort unsichtbar. */
+.heroPremium:focus-visible { outline: 2px solid var(--app-on-media); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .heroPremium, .heroPremiumArrow { transition: none; }
+  .heroPremium:hover { transform: none; }
+  .heroPremium:hover .heroPremiumArrow { transform: none; }
+}

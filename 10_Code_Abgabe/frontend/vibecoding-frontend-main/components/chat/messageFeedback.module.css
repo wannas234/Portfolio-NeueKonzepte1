@@ -1,0 +1,9 @@
+.feedback { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+.actions { display: inline-flex; gap: 4px; }
+.button { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; color: var(--doc-muted, var(--app-muted)); background: transparent; border: 1px solid transparent; border-radius: 8px; cursor: pointer; }
+.button svg { width: 15px; height: 15px; }
+.button:hover:not(:disabled) { color: var(--doc-ink, #10201a); background: var(--app-neutral-soft); }
+.button:focus-visible { outline: 2px solid var(--doc-accent-b, #0e8850); outline-offset: 2px; }
+.button[aria-pressed="true"] { color: var(--doc-accent-b, #0e8850); background: var(--app-teal-tint); border-color: currentColor; }
+.button:disabled { opacity: .6; cursor: progress; }
+.error { margin: 0; color: var(--app-danger); font-size: 12px; }

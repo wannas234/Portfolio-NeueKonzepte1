@@ -1,0 +1,105 @@
+.page { --doc-ink: var(--app-ink); --doc-muted: var(--app-muted); --doc-line: var(--app-line); max-width: var(--content-width); min-height: calc(100svh - 102px); margin-inline: auto; padding: 26px; color: var(--doc-ink); background: var(--app-veil); border: 1px solid var(--app-line-soft); border-radius: 14px; box-shadow: 0 5px 24px rgba(104,133,190,.035); }
+.eyebrow { font: 650 11px/1.5 var(--font-geist-sans), sans-serif; letter-spacing: .06em; color: var(--doc-muted); text-transform: uppercase; }
+.page h1 { margin-top: var(--space-2); font-size: clamp(1.75rem, 2.6vw, 2.25rem); font-weight: 700; letter-spacing: -.03em; overflow-wrap: anywhere; }
+.intro { max-width: 54ch; margin-top: var(--space-3); color: var(--doc-muted); font-size: var(--font-body); line-height: 1.6; }
+
+.errorCard { max-width: 620px; padding: 22px; background: var(--app-surface); border: 1px solid var(--doc-line); border-radius: 12px; }
+.errorCard h2 { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+.errorCard p { margin-top: var(--space-2); color: var(--doc-muted); font-size: 13px; line-height: 1.6; }
+
+.badge { display: inline-flex; align-items: center; margin-bottom: var(--space-3); padding: 4px 12px; border-radius: 999px; background: var(--app-bg); color: var(--doc-muted); font-size: 11px; font-weight: 650; letter-spacing: .04em; text-transform: uppercase; }
+.badge[data-tone="pro"] { background: var(--app-purple-soft-alt); color: var(--app-purple); }
+.badge[data-tone="attention"] { background: var(--app-danger-soft); color: var(--app-danger); }
+.badge[data-tone="pending"] { background: var(--app-blue-tint); color: var(--app-fg-blue); }
+
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
+.primary, .secondary { display: inline-flex; text-decoration: none; align-items: center; justify-content: center; min-height: 44px; padding-inline: var(--space-5); border: 0; border-radius: 12px; font-size: 14px; font-weight: 650; cursor: pointer; transition: box-shadow var(--motion), transform var(--motion); }
+.primary { color: var(--app-on-accent); background: linear-gradient(135deg, var(--app-purple-light), var(--app-purple)); }
+.secondary { color: var(--app-purple); background: var(--app-purple-soft-alt); }
+.primary:hover:not(:disabled), .secondary:hover:not(:disabled) { box-shadow: 0 14px 26px -14px rgba(14, 136, 80, 0.55); transform: translateY(-1px); }
+.primary:focus-visible, .secondary:focus-visible { outline: 2px solid var(--app-purple); outline-offset: 2px; }
+.primary:disabled, .secondary:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.statusMessage, .errorMessage { min-height: 30px; padding-top: var(--space-3); font-size: 13px; line-height: 1.5; }
+.statusMessage { color: var(--doc-muted); }
+.errorMessage { color: var(--app-danger); }
+.note { margin-top: var(--space-5); padding: var(--space-4); background: var(--app-bg); border-left: 2px solid var(--app-purple); border-radius: 0 12px 12px 0; color: var(--doc-muted); font-size: 12.5px; line-height: 1.6; }
+
+/* Der Glanzpunkt muss heller als --app-bg sein, darf aber nicht fix weiß sein: im
+   Dark Mode wäre das ein greller Blitz. --app-surface liegt in beiden Themes richtig. */
+.loadingCard { width: min(100%, 680px); height: 250px; margin-top: var(--space-6); background: linear-gradient(100deg, var(--app-bg) 20%, var(--app-surface) 40%, var(--app-bg) 60%); background-size: 200% 100%; border-radius: 12px; animation: loading 1.5s ease-in-out infinite; }
+@keyframes loading { to { background-position-x: -200%; } }
+
+@media (max-width: 640px) { .page { padding: 18px 14px; min-height: calc(100svh - 100px); } .errorCard { padding: 18px; } }
+@media (prefers-reduced-motion: reduce) { .loadingCard { animation: none; } .primary, .secondary { transition: none; } }
+
+/* Tarifkarte: eine statt zwei nebeneinander, die denselben Preis wiederholt haben.
+   Getönter Kopf (Tarif + Preis), Rumpf (Leistungen), Fuß (Aktion). */
+.plan {
+  overflow: hidden;
+  max-width: 640px;
+  margin-top: var(--space-5);
+  background: var(--app-surface);
+  border: 1px solid var(--app-line);
+  border-radius: 16px;
+  box-shadow: var(--uv-shadow-card);
+}
+.planHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  background: var(--app-purple-tint);
+  border-bottom: 1px solid var(--app-purple-line);
+}
+.plan[data-active] .planHead {
+  background: var(--app-teal-soft);
+  border-bottom-color: var(--app-teal-line);
+}
+.planName { display: block; font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+.planHead .badge { margin: var(--space-2) 0 0; }
+.price { font-size: 26px; font-weight: 750; letter-spacing: -.03em; white-space: nowrap; }
+.period { color: var(--doc-muted); font-size: 12.5px; max-width: 30ch; }
+
+.benefits { margin: 0; padding: var(--space-5) var(--space-6); list-style: none; display: grid; gap: var(--space-3); }
+.benefits li { display: flex; align-items: flex-start; gap: 11px; font-size: 14px; line-height: 1.45; }
+.check {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--app-teal-soft);
+  color: var(--app-fg-teal);
+}
+.check svg { width: 12px; height: 12px; }
+
+.planFoot { padding: 0 var(--space-6) var(--space-6); }
+.planFoot .actions { margin-top: 0; }
+.detail { color: var(--doc-muted); font-size: 13.5px; line-height: 1.55; }
+
+/* Verbrauchsübersicht. Reine Anzeige — die Grenzen setzt die Datenbank durch. */
+.usage { max-width: 640px; margin-top: var(--space-5); padding: var(--space-6); background: var(--app-surface); border: 1px solid var(--app-line); border-radius: 16px; box-shadow: var(--uv-shadow-card); }
+.usageHead h2 { font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+.usageHead p { margin-top: var(--space-2); color: var(--doc-muted); font-size: 12.5px; }
+.usageGrace { margin-top: var(--space-4); padding: var(--space-3) var(--space-4); background: var(--app-amber-tint); border-left: 2px solid var(--app-fg-amber); border-radius: 0 10px 10px 0; color: var(--doc-ink); font-size: 12.5px; line-height: 1.6; }
+
+.usageList { display: grid; gap: var(--space-5); margin: var(--space-5) 0 0; padding: 0; list-style: none; }
+.usageRow { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); font-size: 13px; }
+.usageCount { color: var(--doc-muted); font-size: 12px; font-weight: 650; white-space: nowrap; }
+.usageCount[data-tone="warn"] { color: var(--app-fg-amber); }
+.usageCount[data-tone="full"] { color: var(--app-danger); }
+.usageTrack { overflow: hidden; height: 6px; margin-top: var(--space-2); background: var(--app-bg); border: 1px solid var(--app-line); border-radius: 999px; }
+.usageBar { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--app-purple-light), var(--app-purple)); transition: width var(--motion); }
+.usageBar[data-tone="warn"] { background: var(--app-fg-amber); }
+.usageBar[data-tone="full"] { background: var(--app-danger); }
+.usageHint { margin-top: var(--space-2); color: var(--doc-muted); font-size: 11.5px; }
+.usageFoot { margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--app-line); color: var(--doc-muted); font-size: 11.5px; line-height: 1.6; }
+
+@media (prefers-reduced-motion: reduce) { .usageBar { transition: none; } }
+.waiver { display: flex; align-items: flex-start; gap: var(--space-3); margin-bottom: var(--space-5); color: var(--doc-muted); font-size: 12.5px; line-height: 1.6; cursor: pointer; }
+.waiver input { margin-top: 2px; flex-shrink: 0; }

@@ -1,0 +1,292 @@
+:root {
+  --ink: #f4f7ef;
+  --forest: #0e8850;
+  --canvas: #141a12;
+  --paper: #0a0e0b;
+  --muted: #8b968c;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --surface: #1c2419;
+  --surface-hover: #222d1d;
+  --signal: #d4ff3d;
+  --error: #ff6b57;
+  --error-surface: rgba(255, 107, 87, 0.12);
+  --success-surface: rgba(14, 136, 80, 0.18);
+  --on-forest: rgba(255, 255, 255, 0.82);
+  --line-inverse: rgba(255, 255, 255, 0.2);
+  --green: var(--forest);
+  --glow-signal: 0 0 32px rgba(212, 255, 61, 0.32);
+  --glow-forest: 0 0 36px rgba(14, 136, 80, 0.4);
+  --font-micro: 0.6875rem;
+  --font-meta: 0.8125rem;
+  --font-body: 1rem;
+  --font-row: clamp(1.125rem, 1.8vw, 1.5rem);
+  --font-section: clamp(1.75rem, 3vw, 2.75rem);
+  --font-page: clamp(3rem, 5.6vw, 5.5rem);
+  --font-data: clamp(5.5rem, 10vw, 10rem);
+  --leading-tight: 0.96;
+  --leading-body: 1.6;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --radius-control: 2px;
+  --radius-panel: 4px;
+  --border: 1px solid var(--line);
+  --motion: 160ms ease;
+  --nav-expanded: 232px;
+  --nav-collapsed: 72px;
+  --page-gutter: clamp(20px, 3.4vw, 56px);
+  --content-width: 1560px;
+  --background: var(--paper);
+  --foreground: var(--ink);
+  color-scheme: dark;
+
+  /* Brand palette (UniVerse), exact values from the delivered design-system sheet.
+     Teal is the primary mark, cyan/purple/blue are sparing accents. Used by the
+     light application shell (sidebar/topbar) and dashboard; the dark marketing/auth
+     surfaces above are untouched. */
+  --brand-teal: #14b8a6;       /* Primary */
+  --brand-teal-dark: #0d9488;  /* Primary Hover */
+  --brand-cyan: #22d3ee;       /* Accent Cyan */
+  --brand-purple: #8b5cf6;     /* Accent Purple */
+  --brand-purple-dark: #7c3aed;
+  --brand-blue: #6366f1;       /* Accent Blue */
+  --brand-orange: #d97706;
+  --brand-rose: #e8637a;
+  --brand-app-bg: #f8fbff;     /* Background */
+  --brand-surface: #ffffff;    /* Card */
+  --brand-ink: #0f172a;        /* Text Primary */
+  --brand-muted: #64748b;      /* Text Secondary */
+  --brand-line: #e5e7eb;       /* Border */
+  --brand-teal-soft: #e3f7f3;
+  --brand-teal-soft-line: #bfe9e2;
+  --brand-purple-soft: #efeaff;
+  --brand-blue-soft: #e9f0ff;
+  --brand-orange-soft: #fdf1e0;
+  --brand-rose-soft: #fbe9ec;
+
+  /* UniVerse dashboard refinement pass: a small local design-token layer, used only
+     by the authenticated dashboard shell (DashboardFrame/home.module.css), so the
+     card/icon/sidebar system reads as one family without a wider token refactor. */
+  --uv-teal-fg: #0ea58f;
+  --uv-teal-bg: rgba(20, 184, 166, .10);
+  --uv-purple-fg: #7457f5;
+  --uv-purple-bg: rgba(116, 87, 245, .10);
+  --uv-orange-fg: #f59e0b;
+  --uv-orange-bg: rgba(245, 158, 11, .11);
+  --uv-blue-fg: #3b82f6;
+  --uv-blue-bg: rgba(59, 130, 246, .10);
+
+  --uv-surface: rgba(255, 255, 255, .90);
+  --uv-surface-light: rgba(255, 255, 255, .72);
+  --uv-border: rgba(110, 125, 170, .16);
+
+  --uv-radius-hero: 26px;
+  --uv-radius-lg: 20px;
+  --uv-radius-md: 15px;
+  --uv-radius-tile: 11px;
+
+  --uv-shadow-card: 0 12px 35px rgba(40, 55, 100, .06);
+  --uv-shadow-hover: 0 16px 40px rgba(40, 55, 100, .09);
+  --uv-shadow-hero: 0 18px 50px rgba(10, 20, 50, .14);
+
+  /* A softer, more decelerated curve than the global `ease` used for hover lifts
+     on dashboard cards/rows — smoother settle, still quick to respond. */
+  --uv-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+:root[data-theme="light"] { color-scheme: light; }
+
+/* ── App surface tokens ────────────────────────────────────────────────────
+   Semantic tokens for the authenticated application (shell, dashboard, course
+   areas). Light is the default. The dark set is applied either by an explicit
+   choice (`data-theme="dark"`) or by the system preference when the user has
+   not chosen (no `data-theme` attribute).
+
+   `--app-on-accent` stays light in both themes: it is text placed on a filled
+   accent button, not a surface, so it must not flip with the background. */
+:root {
+  --app-bg: #f7f9ff;
+  --app-surface: #ffffff;
+  --app-surface-soft: #f2f4f2;
+  --app-ink: #111735;
+  --app-muted: #63749a;
+  --app-line: #e8edf9;
+  --app-line-soft: #e7edfb;
+  --app-line-strong: #cfd6d0;
+  --app-on-accent: #ffffff;
+
+  --app-purple: #7545ff;
+  --app-purple-light: #9570ff;
+  --app-purple-strong: #7c3aed;
+  --app-purple-soft: #f0edff;
+  --app-purple-soft-alt: #eeebff;
+  --app-blue: #2563eb;
+  --app-blue-soft: #e8f0fe;
+  --app-teal-soft: #e9f7ef;
+  --app-teal-soft-alt: #d9f2e3;
+  --app-teal-soft-line: #eef8f2;
+
+  --app-danger: #b3392c;
+  --app-danger-strong: #dc2626;
+  --app-danger-soft: #fdecea;
+  --app-danger-line: #fbdad6;
+
+  /* Tint steps per accent family. Three steps (tint → soft → line) keep the
+     light view's shading intact instead of collapsing near-identical pastels
+     onto one value. In dark they become low-alpha overlays on the surface. */
+  --app-neutral-tint: #fafbfa;
+  --app-neutral-soft: #eef2ee;
+  --app-neutral-line: #e2e6e2;
+  --app-blue-tint: #f4f6ff;
+  --app-blue-line: #dbe5ff;
+  --app-blue-deep: #b7cffa;
+  --app-purple-tint: #f2efff;
+  --app-purple-line: #e5ddff;
+  --app-purple-deep: #d5c7ff;
+  --app-teal-tint: #f1faf5;
+  --app-teal-line: #dff8f1;
+  --app-teal-deep: #b5dfc8;
+  --app-rose-tint: #fff0f2;
+  --app-rose-line: #f3d3d0;
+  --app-rose-deep: #f3c9c2;
+  --app-amber-tint: #fef3d9;
+  --app-amber-line: #fff1dc;
+
+  /* Accent text. Dark enough to read on a light surface, so these must lighten
+     in dark mode — unlike the filled-accent values above, which stay put. */
+  --app-fg-teal: #00a58b;
+  --app-fg-blue: #2475ec;
+  --app-fg-amber: #b45309;
+  --app-fg-rose: #d83356;
+
+  /* Translucent veils laid over images and gradients (sidebar art, hero).
+     White in light, near-surface dark in dark — otherwise they stay milky
+     white and the panel never turns dark. */
+  --app-veil-strong: rgba(255, 255, 255, .88);
+  --app-veil: rgba(255, 255, 255, .76);
+  --app-veil-soft: rgba(255, 255, 255, .55);
+  --app-veil-faint: rgba(255, 255, 255, .14);
+
+  /* Text on permanently dark media (the hero photo and its scrim). Deliberately
+     not overridden in dark mode: the backdrop is dark in both themes, so this
+     must not flip or the greeting disappears. */
+  --app-on-media: #f4f6ff;
+  --app-on-media-soft: rgba(255, 255, 255, .88);
+}
+
+/* The theme script in the document head always resolves a concrete choice and
+   writes `data-theme="light"` or `"dark"` before first paint, so a single dark
+   block is enough here — no duplicate `prefers-color-scheme` copy that could
+   drift out of sync. Without JavaScript the light default above applies. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  /* Neutrals carry a faint teal-indigo cast from the brand hues rather than
+     being flat grey, so accents sit in the same family instead of looking
+     pasted on. Each step up is a visible lift: bg → surface → soft. */
+  --app-bg: #0a0f16;
+  --app-surface: #121a24;
+  --app-surface-soft: #1a2430;
+  --app-ink: #e8eef8;
+  --app-muted: #9db0c6;
+  /* Cool-tinted hairlines read softer than pure white at the same opacity. */
+  --app-line: rgba(126, 190, 219, .13);
+  --app-line-soft: rgba(126, 190, 219, .09);
+  --app-line-strong: rgba(126, 190, 219, .24);
+
+  --app-purple: #9570ff;
+  --app-purple-light: #b39dff;
+  --app-purple-strong: #a78bfa;
+  --app-purple-soft: rgba(149, 112, 255, .16);
+  --app-purple-soft-alt: rgba(149, 112, 255, .12);
+  --app-blue: #60a5fa;
+  --app-blue-soft: rgba(96, 165, 250, .16);
+  --app-teal-soft: rgba(20, 184, 166, .16);
+  --app-teal-soft-alt: rgba(20, 184, 166, .22);
+  --app-teal-soft-line: rgba(20, 184, 166, .12);
+
+  --app-danger: #f87171;
+  --app-danger-strong: #ef4444;
+  --app-danger-soft: rgba(248, 113, 113, .16);
+  --app-danger-line: rgba(248, 113, 113, .32);
+
+  --app-neutral-tint: rgba(255, 255, 255, .04);
+  --app-neutral-soft: rgba(255, 255, 255, .07);
+  --app-neutral-line: rgba(255, 255, 255, .12);
+  --app-blue-tint: rgba(96, 165, 250, .10);
+  --app-blue-line: rgba(96, 165, 250, .22);
+  --app-blue-deep: rgba(96, 165, 250, .34);
+  --app-purple-tint: rgba(149, 112, 255, .10);
+  --app-purple-line: rgba(149, 112, 255, .24);
+  --app-purple-deep: rgba(149, 112, 255, .36);
+  --app-teal-tint: rgba(20, 184, 166, .10);
+  --app-teal-line: rgba(20, 184, 166, .20);
+  --app-teal-deep: rgba(20, 184, 166, .34);
+  --app-rose-tint: rgba(232, 99, 122, .12);
+  --app-rose-line: rgba(232, 99, 122, .26);
+  --app-rose-deep: rgba(232, 99, 122, .34);
+  --app-amber-tint: rgba(245, 158, 11, .14);
+  --app-amber-line: rgba(245, 158, 11, .20);
+
+  --app-fg-teal: #2dd4bf;
+  --app-fg-blue: #7cb0ff;
+  --app-fg-amber: #fbbf24;
+  --app-fg-rose: #fb7185;
+
+  --app-veil-strong: rgba(18, 22, 30, .90);
+  --app-veil: rgba(18, 22, 30, .82);
+  --app-veil-soft: rgba(18, 22, 30, .62);
+  --app-veil-faint: rgba(255, 255, 255, .06);
+
+  /* Existing token layers used by the shell and dashboard. */
+  --brand-app-bg: #0a0f16;
+  --brand-surface: #121a24;
+  --brand-ink: #e8eef8;
+  --brand-muted: #9db0c6;
+  --brand-line: rgba(126, 190, 219, .13);
+  --brand-teal-soft: rgba(20, 184, 166, .16);
+  --brand-teal-soft-line: rgba(20, 184, 166, .30);
+  --brand-purple-soft: rgba(139, 92, 246, .16);
+  --brand-blue-soft: rgba(99, 102, 241, .16);
+  --brand-orange-soft: rgba(217, 119, 6, .16);
+  --brand-rose-soft: rgba(232, 99, 122, .16);
+
+  --uv-surface: rgba(18, 26, 36, .92);
+  --uv-surface-light: rgba(18, 26, 36, .74);
+  --uv-border: rgba(126, 190, 219, .15);
+  --uv-teal-bg: rgba(20, 184, 166, .16);
+  --uv-purple-bg: rgba(116, 87, 245, .18);
+  --uv-orange-bg: rgba(245, 158, 11, .16);
+  --uv-blue-bg: rgba(59, 130, 246, .16);
+  /* On dark, a drop shadow alone adds no depth — the shadow disappears into the
+     background. The lit top edge does the work: it reads as a light source
+     above, which is what separates a card from the surface behind it. */
+  --uv-shadow-card: inset 0 1px 0 rgba(255, 255, 255, .06), 0 10px 28px rgba(0, 0, 0, .45);
+  --uv-shadow-hover: inset 0 1px 0 rgba(255, 255, 255, .10), 0 16px 38px rgba(0, 0, 0, .55);
+  --uv-shadow-hero: 0 20px 52px rgba(0, 0, 0, .60);
+}
+
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-geist-sans), sans-serif; font-size: var(--font-body); line-height: var(--leading-body); }
+* { box-sizing: border-box; }
+::selection { background: var(--signal); color: var(--paper); }
+button, input, textarea, select { font: inherit; }
+button, a, summary, select { -webkit-tap-highlight-color: transparent; }
+button, summary { cursor: pointer; }
+button { transition: color var(--motion), background-color var(--motion), border-color var(--motion), box-shadow var(--motion), transform var(--motion); }
+button:disabled, input:disabled, select:disabled, textarea:disabled { opacity: .48; cursor: not-allowed; }
+:is(a, button, input, textarea, select, summary, [tabindex]):focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+input, textarea, select { min-width: 0; color: var(--ink); background: var(--canvas); border: var(--border); border-radius: var(--radius-control); padding: var(--space-3) var(--space-4); }
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select { min-height: 44px; }
+textarea { resize: vertical; line-height: var(--leading-body); }
+input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--error); }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
+progress { accent-color: var(--signal); }
+dialog { color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; } }

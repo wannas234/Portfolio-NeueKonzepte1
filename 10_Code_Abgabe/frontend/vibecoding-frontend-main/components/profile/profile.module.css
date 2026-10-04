@@ -1,0 +1,150 @@
+.page { --doc-ink: var(--app-ink); --doc-muted: var(--app-muted); --doc-line: var(--app-line); --doc-accent-a: var(--app-purple-light); --doc-accent-b: var(--app-purple); max-width: var(--content-width); margin-inline: auto; color: var(--doc-ink); }
+.eyebrow, .sectionLabel { font: 650 11px/1.5 var(--font-geist-sans), sans-serif; letter-spacing: .06em; color: var(--doc-muted); text-transform: uppercase; }
+.page h1 { margin-top: var(--space-2); font-size: clamp(1.75rem, 2.6vw, 2.25rem); font-weight: 700; letter-spacing: -.03em; overflow-wrap: anywhere; }
+.intro { max-width: 54ch; margin-top: var(--space-3); color: var(--doc-muted); font-size: var(--font-body); line-height: 1.6; }
+
+.pageHeader { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-6); padding-bottom: var(--space-6); margin-bottom: var(--space-8); border-bottom: 1px solid var(--doc-line); }
+.identity { display: flex; align-items: center; gap: var(--space-3); min-width: 240px; padding: var(--space-2) var(--space-4) var(--space-2) var(--space-2); background: var(--app-surface); border: 1px solid var(--doc-line); border-radius: 999px; }
+.identity > span { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; color: var(--app-on-accent); background: linear-gradient(135deg, var(--doc-accent-a), var(--doc-accent-b)); border-radius: 12px; font-size: 15px; font-weight: 700; }
+.identity strong, .identity small { display: block; overflow-wrap: anywhere; }
+.identity strong { font-size: 13.5px; font-weight: 650; }
+.identity small { margin-top: 1px; color: var(--doc-muted); font-size: 12px; }
+
+.grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .8fr); gap: var(--space-5); }
+.card, .errorCard { padding: var(--space-6); background: var(--app-surface); border: 1px solid var(--doc-line); border-radius: 12px; }
+.card h2, .errorCard h2 { margin-top: var(--space-2); font-size: 19px; font-weight: 700; letter-spacing: -.02em; }
+.supportingText, .errorCard p { margin-top: var(--space-2); color: var(--doc-muted); font-size: 13px; line-height: 1.6; }
+.card form { margin-top: var(--space-6); }
+.card label { display: block; margin-bottom: var(--space-2); color: var(--doc-ink); font-size: 13px; font-weight: 650; }
+.card input { width: 100%; padding: var(--space-3) var(--space-4); color: var(--doc-ink); background: var(--app-bg); border: 1.5px solid var(--doc-line); border-radius: 12px; font-size: 14px; transition: border-color var(--motion), box-shadow var(--motion); }
+.card input:focus-visible { outline: none; background: var(--app-surface); border-color: var(--doc-accent-b); box-shadow: 0 0 0 4px rgba(14, 136, 80, 0.14); }
+.fieldHelp { display: flex; justify-content: space-between; margin-top: var(--space-2); color: var(--doc-muted); font-size: 11px; }
+.statusMessage, .errorMessage { min-height: 30px; padding-top: var(--space-2); font-size: 13px; line-height: 1.5; }
+.statusMessage { color: var(--doc-accent-b); }
+.errorMessage { color: var(--app-danger); }
+.card button, .errorCard button { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-3); min-height: 44px; margin-top: var(--space-4); padding-inline: var(--space-5); color: var(--app-on-accent); background: linear-gradient(135deg, var(--doc-accent-a), var(--doc-accent-b)); border: 0; border-radius: 12px; font-size: 14px; font-weight: 650; cursor: pointer; transition: box-shadow var(--motion), transform var(--motion); }
+.card button:hover:not(:disabled), .errorCard button:hover:not(:disabled) { box-shadow: 0 14px 26px -14px rgba(14, 136, 80, 0.55); transform: translateY(-1px); }
+.card button:disabled, .errorCard button:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.accountDetails { margin-top: var(--space-5); }
+.accountDetails > div { padding-block: var(--space-3); border-bottom: 1px solid var(--doc-line); }
+.accountDetails > div:last-child { border-bottom: 0; }
+.accountDetails dt { color: var(--doc-muted); font-size: 10.5px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; }
+.accountDetails dd { margin-top: var(--space-2); overflow-wrap: anywhere; color: var(--doc-ink); font-size: 14px; font-weight: 600; }
+.securityNote { margin-top: var(--space-5); padding: var(--space-4); background: var(--app-bg); border-left: 2px solid var(--doc-accent-b); border-radius: 0 12px 12px 0; color: var(--doc-muted); font-size: 12.5px; line-height: 1.6; }
+.errorCard { max-width: 620px; }
+
+/* Glanzpunkt über ein Token statt fix weiß — sonst blitzt der Shimmer im Dark Mode. */
+.loadingCard { width: min(100%, 680px); height: 250px; margin-top: var(--space-6); background: linear-gradient(100deg, var(--app-bg) 20%, var(--app-surface) 40%, var(--app-bg) 60%); background-size: 200% 100%; border-radius: 12px; animation: loading 1.5s ease-in-out infinite; }
+@keyframes loading { to { background-position-x: -200%; } }
+
+@media (max-width: 800px) {
+  .pageHeader { align-items: flex-start; flex-direction: column; gap: var(--space-5); }
+  .grid { grid-template-columns: 1fr; gap: var(--space-5); }
+}
+@media (max-width: 520px) {
+  .card, .errorCard { padding: var(--space-5); }
+  .identity { min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .loadingCard { animation: none; } }
+
+/* Shared light workspace surface from the reference screens. */
+.grid { grid-template-columns: minmax(220px,.8fr) minmax(0,1.2fr); gap: 20px; }
+.profileCard { display: flex; flex-direction: column; align-items: center; padding: 36px 24px; background: var(--app-surface); border: 1px solid var(--app-line); border-radius: 12px; text-align: center; }
+.avatar { display: grid; place-items: center; width: 78px; height: 78px; margin-bottom: 16px; border-radius: 50%; background: linear-gradient(135deg,#11c6b2,var(--app-fg-teal)); color: var(--app-on-accent); font-size: 30px; }
+.profileCard h2 { font-size: 22px; font-weight: 700; }
+.profileCard p { margin-top: 5px; color: var(--app-muted); font-size: 13px; overflow-wrap: anywhere; }
+/* margin-bottom hier und padding-top an .membership sind die Mindestabstände um die
+   Pro-Karte; die auto-Abstände kommen obendrauf, wenn die Spalte Platz übrig hat. */
+.editLink { margin-top: 20px; margin-bottom: 30px; padding: 10px 20px; border-radius: 10px; background: var(--app-blue-tint); color: var(--app-fg-blue); font-size: 12px; font-weight: 600; }
+.membership { margin-top: auto; padding-top: 40px; font-size: 13px; }
+.detailsColumn { display: grid; gap: 16px; min-width: 0; }
+.card { padding: 22px; }
+.card h2 { margin: 0; font-size: 16px; }
+.card form { margin-top: 18px; }
+.card input { border-width: 1px; border-radius: 8px; }
+.card button { background: var(--app-purple-soft-alt); color: var(--app-purple); font-size: 12px; }
+.accountDetails > div { display: grid; grid-template-columns: 120px minmax(0,1fr); gap: 12px; border: 0; padding-block: 8px; }
+.accountDetails dt { text-transform: none; font-size: 12px; letter-spacing: 0; }
+.accountDetails dd { margin: 0; font-size: 12px; }
+.sectionLabel { display: none; }
+@media (max-width: 800px) { .grid { grid-template-columns: 1fr; } .profileCard { padding: 24px; } .editLink { margin-bottom: 24px; } .membership { padding-top: 28px; } .profileCard .proCard { margin-top: 0; } }
+.page { min-height: calc(100svh - 102px); padding: 26px; background: var(--app-veil); border: 1px solid var(--app-line-soft); border-radius: 14px; box-shadow: 0 5px 24px rgba(104,133,190,.035); }
+@media (max-width: 640px) { .page { padding: 18px 14px; min-height: calc(100svh - 100px); } }
+
+/* UniVerse-Pro-Karte: eigene, getönte Karte statt einer dritten weißen — sie ist ein
+   Hinweis, keine Kontoangabe, und darf sich von den Formularkarten darüber absetzen.
+   Mit aktivem Abo wechselt der Ton von Lila (Angebot) auf Teal (aktiv). */
+.proCard {
+  padding: 20px 22px;
+  background: var(--app-purple-tint);
+  border: 1px solid var(--app-purple-line);
+  border-radius: 12px;
+}
+.proCard[data-pro] { background: var(--app-teal-soft); border-color: var(--app-teal-line); }
+/* Sitzt in der Profilspalte zwischen "Profil bearbeiten" und "Mitglied seit": die beiden
+   auto-Abstände (hier und an .membership) teilen den freien Platz, die Karte landet mittig.
+   Unter 800px gibt es keinen freien Platz mehr, dort greift ein fester Abstand. */
+.profileCard .proCard { align-self: stretch; margin-top: auto; padding: 18px; text-align: left; }
+/* .profileCard h2/p sind spezifischer als .proStatus/.proText und würden sie sonst überschreiben. */
+.profileCard .proCard .proStatus { font-size: 16px; }
+.profileCard .proCard .proText { margin-top: 6px; font-size: 12.5px; }
+
+.proTop { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.proBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--app-surface);
+  color: var(--app-purple);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .04em;
+}
+.proCard[data-pro] .proBadge { color: var(--app-fg-teal); }
+.proBadge svg { width: 12px; height: 12px; }
+.proPrice { font-size: 15px; font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+
+.proStatus { margin-top: 14px; font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+.proText { margin-top: 6px; color: var(--app-muted); font-size: 12.5px; line-height: 1.6; }
+
+.proLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  margin-top: 16px;
+  padding-inline: 18px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--app-purple-light), var(--app-purple));
+  color: var(--app-on-accent);
+  font-size: 12.5px;
+  font-weight: 650;
+  text-decoration: none;
+  transition: box-shadow var(--motion), transform var(--motion);
+}
+.proCard[data-pro] .proLink { background: var(--app-surface); color: var(--app-fg-teal); }
+.proLink:hover { box-shadow: 0 12px 22px -14px rgba(14, 136, 80, .55); transform: translateY(-1px); }
+.proLink:focus-visible { outline: 2px solid var(--app-purple); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .proLink { transition: none; } .proLink:hover { transform: none; } }
+
+/* Datenexport und Kontolöschung. Die Löschung ist endgültig, deshalb farblich
+   abgesetzt und hinter Passwort plus Bestätigungswort. */
+.dataActions { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; margin-top: var(--space-5); }
+.dataActions button { margin-top: 0; }
+.dataHint { color: var(--app-muted); font-size: 11.5px; }
+
+.dangerZone { margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--doc-line); }
+.dangerZone h3 { font-size: 14px; font-weight: 700; color: var(--app-danger-strong); }
+.dangerZone > p { max-width: 62ch; margin-top: var(--space-2); color: var(--app-muted); font-size: 12.5px; line-height: 1.6; }
+.dangerZone form { margin-top: var(--space-4); }
+.dangerZone label { display: block; margin-top: var(--space-4); margin-bottom: 5px; color: var(--app-muted); font-size: 12px; font-weight: 650; }
+.dangerZone input { width: 100%; padding: 9px 12px; color: var(--doc-ink); background: var(--app-bg); border: 1.5px solid var(--doc-line); border-radius: 10px; font-size: 13px; }
+.dangerZone input:focus-visible { outline: 2px solid var(--app-danger); outline-offset: 1px; }
+.dangerActions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-5); }
+.dangerButton { display: inline-flex; align-items: center; min-height: 40px; margin-top: var(--space-4); padding-inline: 18px; color: var(--app-on-accent); background: var(--app-danger); border: 0; border-radius: 10px; font-size: 12.5px; font-weight: 650; cursor: pointer; }
+.dangerActions .dangerButton { margin-top: 0; }
+.dangerButton:disabled { opacity: .5; cursor: not-allowed; }
+.cancelDelete { min-height: 40px; padding-inline: 16px; color: var(--app-muted); background: none; border: 0; font-size: 12.5px; font-weight: 650; cursor: pointer; }

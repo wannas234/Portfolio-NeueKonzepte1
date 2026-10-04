@@ -1,0 +1,76 @@
+.page { max-width: var(--content-width); margin-inline: auto; }
+.micro { composes: micro from "../ui/system.module.css"; color: var(--muted); }
+.catalog { padding-bottom: var(--space-10); }
+.catalogHeader { max-width: var(--content-width); margin-inline: auto; padding: var(--space-8) var(--page-gutter) 0; }
+.catalogHeader h1 { margin-top: var(--space-3); font-size: clamp(1.75rem, 2.6vw, 2.5rem); font-weight: 550; letter-spacing: -.04em; line-height: 1.1; }
+.subhead { max-width: 60ch; margin-top: var(--space-3); color: var(--muted); font-size: var(--font-body); }
+.toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4); max-width: var(--content-width); margin: var(--space-8) auto var(--space-6); padding: 0 var(--page-gutter) var(--space-5); border-bottom: var(--border); }
+.count { color: var(--muted); font-size: 13px; }
+.count strong { margin-right: var(--space-2); color: var(--ink); font: 600 16px/1 var(--font-geist-mono), monospace; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); max-width: var(--content-width); margin: 0 auto; padding: 0 var(--page-gutter) var(--space-12); list-style: none; gap: var(--space-5); }
+.card { position: relative; display: flex; flex-direction: column; min-width: 0; height: 100%; padding: var(--space-6); background: var(--canvas); border: var(--border); border-radius: var(--radius-panel); color: var(--ink); transition: border-color var(--motion); }
+.card:hover { border-color: var(--forest); }
+.cardHead { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.courseNumber { font: 400 12px/1.6 var(--font-geist-mono), monospace; color: var(--muted); }
+.courseCode { font: 500 10px/1.5 var(--font-geist-mono), monospace; color: var(--muted); letter-spacing: .07em; }
+.card h3 { margin-top: var(--space-4); font-size: 20px; font-weight: 550; letter-spacing: -.03em; line-height: 1.2; overflow-wrap: anywhere; }
+.card p { flex: 1; margin-top: var(--space-3); color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+.courseArrow { align-self: flex-end; margin-top: var(--space-5); font-size: 20px; color: var(--muted); transition: color var(--motion); }
+.card:hover .courseArrow { color: var(--signal); }
+.catalogFoot { max-width: var(--content-width); margin: 0 auto; padding: var(--space-5) var(--page-gutter) 0; color: var(--muted); font-size: 11px; }
+.createButton { composes: button from "../ui/system.module.css"; }
+.empty { composes: empty from "../ui/system.module.css"; }
+.backLink { composes: textButton from "../ui/system.module.css"; }
+.topRow { margin-bottom: var(--space-6); }
+.header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); }
+.header h1 { font-size: var(--font-page); line-height: 1; letter-spacing: -.06em; }
+.courseHeaderRow { display: grid; grid-template-columns: 1fr; gap: var(--space-8); }
+.courseIdentity { padding: var(--space-8); background: var(--forest); color: var(--ink); }
+.courseIdentity h1 { max-width: 18ch; font-size: var(--font-page); font-weight: 500; letter-spacing: -.06em; line-height: 1; overflow-wrap: anywhere; margin-top: var(--space-6); }
+.courseIdentity p { max-width: 65ch; color: var(--on-forest); font-size: var(--font-body); margin-top: var(--space-5); }
+.badge { display: inline-grid; place-items: center; width: 40px; height: 40px; font: 500 var(--font-meta)/1 var(--font-geist-mono), monospace; color: var(--forest); background: var(--canvas); }
+.toolGrid { display: grid; grid-template-columns: 1fr 1fr; border-block: var(--border); }
+.courseLink { display: block; min-width: 0; }
+.toolCard { display: flex; align-items: center; gap: var(--space-5); padding: var(--space-5) var(--space-4); }
+.toolGrid > a + a { border-left: var(--border); }
+.toolCard:hover { background: var(--canvas); }
+.toolIcon { font: 500 11px/1.5 var(--font-geist-mono), monospace; color: var(--muted); }
+.toolBody { flex: 1; }
+.toolBody h3 { font-size: 20px; font-weight: 550; letter-spacing: -.025em; }
+.toolBody p { color: var(--muted); font-size: 12px; }
+.toolArrow { font-size: 24px; }
+.uploadSection { margin-top: var(--space-10); }
+.uploadSection h2 { font-size: var(--font-section); line-height: 1.1; font-weight: 500; letter-spacing: -.04em; margin-bottom: var(--space-5); }
+.uploadSection h2 small { font-size: 14px; color: var(--muted); margin-left: var(--space-3); }
+.uploadLabel { composes: button from "../ui/system.module.css"; position: relative; }
+.uploadLabel input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+.uploadLabel:focus-within { outline: 2px solid var(--forest); outline-offset: 4px; }
+.uploadLabel[aria-disabled="true"] { opacity: .5; cursor: wait; }
+.uploadHint { font-size: var(--font-meta); color: var(--muted); margin-block: var(--space-3); }
+.uploadHint[role="alert"] { color: var(--error); }
+.fileList { list-style: none; padding: 0; margin-top: var(--space-6); border-top: 2px solid var(--ink); }
+.fileRow { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(160px,1fr) 72px 40px; align-items: center; gap: var(--space-5); padding-block: var(--space-5); border-bottom: var(--border); }
+.fileName { color: var(--ink); font-size: 16px; text-align: left; overflow-wrap: anywhere; }
+button.fileName:hover { text-decoration: underline; text-underline-offset: 4px; }
+.fileRow > small { color: var(--muted); font-size: 11px; }
+.fileRemove { min-height: 40px; color: var(--muted); }
+.fileRemove:hover { color: var(--error); }
+.indexStatus { display: flex; gap: var(--space-2); color: var(--muted); }
+.indexStatus[data-tone="ready"] { color: var(--forest); }
+.indexStatus[data-tone="failed"] { color: var(--error); }
+.indexBody { flex: 1; min-width: 0; }
+.indexIcon, .indexLabel { font-size: 11px; }
+.indexDetail { display: block; font-size: 11px; margin-top: var(--space-1); overflow-wrap: anywhere; }
+.indexTrack { height: 3px; width: 100%; margin-top: var(--space-2); background: var(--line); }
+.indexFill { height: 100%; background: var(--forest); transition: width var(--motion); }
+.dangerZone { padding-top: var(--space-8); margin-top: var(--space-12); border-top: var(--border); text-align: right; }
+.dangerButton { composes: textButton from "../ui/system.module.css"; color: var(--error); }
+.backdrop { composes: backdrop from "../ui/system.module.css"; }
+.dialog { composes: dialog from "../ui/system.module.css"; }
+.dialogHeader { composes: dialogHeader from "../ui/system.module.css"; }
+.closeButton { composes: closeButton from "../ui/system.module.css"; }
+.field { composes: field from "../ui/system.module.css"; }
+.hint { composes: hint from "../ui/system.module.css"; }
+.submitButton { composes: button from "../ui/system.module.css"; width: 100%; margin-top: var(--space-6); }
+@media(max-width:1100px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media(max-width:767px) { .grid { grid-template-columns: 1fr; } .toolGrid { grid-template-columns: 1fr; } .toolGrid > a + a { border-left: 0; border-top: var(--border); } .courseIdentity { padding: var(--space-6); } .fileRow { grid-template-columns: minmax(0,1fr) 56px 32px; gap: var(--space-3); } .fileRow .indexStatus { grid-column: 1 / -1; grid-row: 2; } .fileName { font-size: 14px; } }
