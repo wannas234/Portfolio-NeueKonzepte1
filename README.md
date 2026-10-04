@@ -54,3 +54,5 @@ Die einzelnen Verzeichnisse enthalten die jeweiligen Portfolio-Bestandteile und 
 ## Hinweis zu den Visualisierungen
 
 Die im Portfolio verwendeten Diagramme und Infografiken wurden mithilfe **Künstlicher Intelligenz (KI)** generiert. Die zugrunde liegenden Inhalte, Aussagen und Zahlen stammen aus den jeweiligen Portfolio-Kapiteln beziehungsweise den dort angegebenen Quellen.
+
+Auch die Literaturrecherche sowie die Recherche von Markt- und Hintergrundinformationen haben wir KI-gestützt durchgeführt und die Ergebnisse anschließend selbst geprüft und eingeordnet.
