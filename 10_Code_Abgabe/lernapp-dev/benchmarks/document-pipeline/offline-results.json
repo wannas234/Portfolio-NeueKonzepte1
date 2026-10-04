@@ -1,0 +1,494 @@
+{
+  "kind": "offline-router-regression",
+  "baseline_commit": "e6efcea2806dea293f37f2f8a94dc75c19a837d5",
+  "documents": [
+    {
+      "file": "Benchmark_Lernskript_Energiesysteme.pdf",
+      "sha256": "2651e4115a434d92e250cdf209ef86e5c2e78083dc9adfcba11ef4559a4e379e",
+      "bytes": 494288,
+      "pages": 12,
+      "before_visual": 11,
+      "after_visual": 10,
+      "native_chunks": 13,
+      "native_chunks_under_200": 1,
+      "routing": [
+        {
+          "page": 1,
+          "route": "local",
+          "reasons": []
+        },
+        {
+          "page": 2,
+          "route": "local",
+          "reasons": []
+        },
+        {
+          "page": 3,
+          "route": "visual",
+          "reasons": ["formula_candidate", "combined_layout"]
+        },
+        {
+          "page": 4,
+          "route": "visual",
+          "reasons": ["repeated_columns", "diagram_geometry", "large_vector_graphic"]
+        },
+        {
+          "page": 5,
+          "route": "visual",
+          "reasons": ["large_image_or_scan"]
+        },
+        {
+          "page": 6,
+          "route": "visual",
+          "reasons": [
+            "formula_candidate",
+            "repeated_columns",
+            "diagram_geometry",
+            "combined_layout"
+          ]
+        },
+        {
+          "page": 7,
+          "route": "visual",
+          "reasons": [
+            "repeated_columns",
+            "diagram_geometry",
+            "large_vector_graphic",
+            "combined_layout"
+          ]
+        },
+        {
+          "page": 8,
+          "route": "visual",
+          "reasons": ["large_image_or_scan"]
+        },
+        {
+          "page": 9,
+          "route": "visual",
+          "reasons": ["diagram_geometry", "large_vector_graphic"]
+        },
+        {
+          "page": 10,
+          "route": "visual",
+          "reasons": ["repeated_columns", "diagram_geometry", "large_vector_graphic"]
+        },
+        {
+          "page": 11,
+          "route": "visual",
+          "reasons": ["large_image_or_scan"]
+        },
+        {
+          "page": 12,
+          "route": "visual",
+          "reasons": [
+            "repeated_columns",
+            "diagram_geometry",
+            "large_vector_graphic",
+            "combined_layout"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "Neue Konzepte 2026 - VL1.pdf",
+      "sha256": "43110e9fb9b77794297db165800936702229d9130a46643850fdf57d9d4178db",
+      "bytes": 5151565,
+      "pages": 67,
+      "before_visual": 67,
+      "after_visual": 61,
+      "native_chunks": 67,
+      "native_chunks_under_200": 38,
+      "routing": [
+        {
+          "page": 1,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 2,
+          "route": "visual",
+          "reasons": ["body_image", "visual_structure"]
+        },
+        {
+          "page": 3,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 4,
+          "route": "visual",
+          "reasons": ["body_image", "visual_structure"]
+        },
+        {
+          "page": 5,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 6,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 7,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 8,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure", "diagram_geometry"]
+        },
+        {
+          "page": 9,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 10,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 11,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 12,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 13,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 14,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 15,
+          "route": "visual",
+          "reasons": [
+            "visual_structure",
+            "diagram_geometry",
+            "large_vector_graphic",
+            "combined_layout"
+          ]
+        },
+        {
+          "page": 16,
+          "route": "local",
+          "reasons": []
+        },
+        {
+          "page": 17,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 18,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 19,
+          "route": "visual",
+          "reasons": ["formula_candidate", "large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 20,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 21,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 22,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 23,
+          "route": "visual",
+          "reasons": ["repeated_columns", "visual_structure"]
+        },
+        {
+          "page": 24,
+          "route": "visual",
+          "reasons": ["body_image", "visual_structure"]
+        },
+        {
+          "page": 25,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 26,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 27,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 28,
+          "route": "visual",
+          "reasons": ["body_image", "visual_structure"]
+        },
+        {
+          "page": 29,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 30,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 31,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 32,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 33,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 34,
+          "route": "visual",
+          "reasons": ["body_image", "visual_structure"]
+        },
+        {
+          "page": 35,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 36,
+          "route": "local",
+          "reasons": []
+        },
+        {
+          "page": 37,
+          "route": "local",
+          "reasons": []
+        },
+        {
+          "page": 38,
+          "route": "visual",
+          "reasons": ["body_image", "visual_structure"]
+        },
+        {
+          "page": 39,
+          "route": "visual",
+          "reasons": ["body_image", "visual_structure"]
+        },
+        {
+          "page": 40,
+          "route": "visual",
+          "reasons": ["formula_candidate", "large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 41,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 42,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 43,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 44,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 45,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 46,
+          "route": "visual",
+          "reasons": ["table_candidate", "body_image", "visual_structure"]
+        },
+        {
+          "page": 47,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 48,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure", "combined_layout"]
+        },
+        {
+          "page": 49,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 50,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure", "combined_layout"]
+        },
+        {
+          "page": 51,
+          "route": "visual",
+          "reasons": [
+            "large_image_or_scan",
+            "visual_structure",
+            "large_vector_graphic",
+            "combined_layout"
+          ]
+        },
+        {
+          "page": 52,
+          "route": "visual",
+          "reasons": ["formula_candidate"]
+        },
+        {
+          "page": 53,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure", "combined_layout"]
+        },
+        {
+          "page": 54,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure", "combined_layout"]
+        },
+        {
+          "page": 55,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 56,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 57,
+          "route": "local",
+          "reasons": []
+        },
+        {
+          "page": 58,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 59,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 60,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 61,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 62,
+          "route": "local",
+          "reasons": []
+        },
+        {
+          "page": 63,
+          "route": "visual",
+          "reasons": [
+            "visual_structure",
+            "diagram_geometry",
+            "large_vector_graphic",
+            "combined_layout"
+          ]
+        },
+        {
+          "page": 64,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 65,
+          "route": "local",
+          "reasons": []
+        },
+        {
+          "page": 66,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        },
+        {
+          "page": 67,
+          "route": "visual",
+          "reasons": ["large_image_or_scan", "visual_structure"]
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "path": "unpdf/Benchmark-Energie/extract.md",
+      "sha256": "7eeec384f7003cc92052ab79929ec182e0fef03055110e60aff526b96291a00d",
+      "bytes": 13590,
+      "characters": 13441
+    },
+    {
+      "path": "unpdf/Neue_Konzepte/extract.md",
+      "sha256": "85c221410d5a1095d291143ba068354b74dd607dcafe96331d19128ae91911cf",
+      "bytes": 16135,
+      "characters": 15393
+    },
+    {
+      "path": "Gemini-OCR/Benchmark-Energie/Extract.md",
+      "sha256": "47a3957f8d6f9121ccedf7710ad644116ed3e9e982a6817eb24b7b490e0d700f",
+      "bytes": 28552,
+      "characters": 28255
+    },
+    {
+      "path": "Doclin-OCR/Benchmark-Energie/extract.md",
+      "sha256": "d994b6f133c9a1ffdc72ce6a909c94a75da0ef1e53610aa03edce912a81e29b0",
+      "bytes": 15597,
+      "characters": 15464
+    },
+    {
+      "path": "Doclin-OCR/Neue Konzepte/extract.md",
+      "sha256": "a83fc21df2441c90726c39840ab63191cfb0dbf685af112014aab86117172b2b",
+      "bytes": 27235,
+      "characters": 27046
+    },
+    {
+      "path": "Gemini-OCR/timing.md",
+      "sha256": "2e2171076e8799d91324b767eb36769b6e4ae594761876c98f6a82b96328bb1c",
+      "bytes": 851,
+      "characters": 851
+    }
+  ],
+  "note": "No new model calls. Selection counts are not quality or latency measurements. Prior Markdown exports lack structured checkpoints; production chunk counts cannot be reconstructed reliably."
+}

@@ -1,0 +1,23 @@
+{
+  "site_url": "env(AUTH_SITE_URL)",
+  "uri_allow_list": "env(AUTH_REDIRECT_URLS)",
+  "mailer_subjects_confirmation": "Bestätige deine E-Mail-Adresse für UniVerse",
+  "mailer_templates_confirmation_content": "template(confirmation)",
+  "mailer_subjects_recovery": "UniVerse-Passwort zurücksetzen",
+  "mailer_templates_recovery_content": "template(recovery)",
+  "mailer_subjects_email_change": "Änderung deiner UniVerse-E-Mail-Adresse bestätigen",
+  "mailer_templates_email_change_content": "template(email_change)",
+  "mailer_notifications_password_changed_enabled": true,
+  "mailer_subjects_password_changed_notification": "Dein UniVerse-Passwort wurde geändert",
+  "mailer_templates_password_changed_notification_content": "template(password_changed_notification)",
+  "mailer_notifications_email_changed_enabled": true,
+  "mailer_subjects_email_changed_notification": "Deine UniVerse-E-Mail-Adresse wurde geändert",
+  "mailer_templates_email_changed_notification_content": "template(email_changed_notification)",
+  "disable_signup": false,
+  "external_email_enabled": true,
+  "external_anonymous_users_enabled": false,
+  "mailer_autoconfirm": false,
+  "mailer_secure_email_change_enabled": true,
+  "password_min_length": 8,
+  "jwt_exp": 3600
+}

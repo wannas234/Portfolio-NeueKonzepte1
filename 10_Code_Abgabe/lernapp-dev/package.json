@@ -1,0 +1,60 @@
+{
+  "name": "lernapp-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Supabase-basiertes Backend für die Lernapp (Postgres-Schema, RLS-Policies, Edge Functions)",
+  "type": "module",
+  "engines": {
+    "node": ">=24.2.0"
+  },
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:start": "node scripts/local.mjs start",
+    "db:stop": "node scripts/local.mjs stop",
+    "db:status": "node scripts/local.mjs status",
+    "db:reset": "node scripts/local.mjs reset",
+    "db:new": "node scripts/local.mjs new",
+    "db:diff": "node scripts/local.mjs diff",
+    "db:lint": "node scripts/local.mjs lint",
+    "test": "npm run test:db",
+    "test:db": "node scripts/local.mjs test",
+    "gen:types": "node scripts/local.mjs types",
+    "functions:serve": "node scripts/local.mjs serve",
+    "functions:lint": "deno lint --config supabase/functions/deno.json supabase/functions client",
+    "functions:check": "deno check --config supabase/functions/deno.json supabase/functions client",
+    "prepare": "husky",
+    "db:apply": "node scripts/local.mjs apply",
+    "db:workers": "node scripts/configure-local-workers.mjs",
+    "test:tools": "node --test scripts/*.test.mjs",
+    "test:files": "node --test scripts/files.integration.mjs",
+    "test:storage": "node --test scripts/storage.integration.mjs",
+    "test:embedding-migration": "node --test scripts/embedding-migration.integration.mjs",
+    "test:chat": "node --test scripts/chat.integration.mjs",
+    "test:auth": "node --test scripts/auth.integration.mjs",
+    "functions:test": "deno test --allow-env --config supabase/functions/deno.json supabase/functions",
+    "db:status:dev": "node scripts/remote.mjs development migrations",
+    "config:plan:dev": "node scripts/auth-config.mjs development plan",
+    "config:push:dev": "node scripts/auth-config.mjs development push",
+    "db:status:prod": "node scripts/remote.mjs production migrations",
+    "config:plan:prod": "node scripts/auth-config.mjs production plan",
+    "config:push:prod": "node scripts/auth-config.mjs production push",
+    "test:quizzes": "node --test scripts/quizzes.integration.mjs",
+    "test:flashcards": "node --test scripts/flashcards.integration.mjs",
+    "test:summaries": "node --test scripts/summaries.integration.mjs",
+    "test:course-structure": "node scripts/test-course-structure-db.mjs",
+    "test:learning": "node scripts/test-learning-workflow-db.mjs"
+  },
+  "lint-staged": {
+    "*.{ts,json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "deno": "^2.9.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.0",
+    "prettier": "^3.9.6",
+    "supabase": "^2.116.0"
+  }
+}

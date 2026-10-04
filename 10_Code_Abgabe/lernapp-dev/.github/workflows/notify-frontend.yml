@@ -1,0 +1,156 @@
+name: Notify Frontend
+
+# Ziel hier konfigurieren; Backend-Owner und -Repo kommen aus dem PR-Event.
+env:
+  FRONTEND_OWNER: lorenzo689
+  FRONTEND_REPO: vibecoding-frontend
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [dev]
+
+# Kein Checkout und keine Berechtigungen für das Backend nötig.
+# Schreibzugriff auf das Frontend erhält ausschließlich das separate PAT.
+permissions: {}
+
+concurrency:
+  group: notify-frontend-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Frontend-Issue bei aktivierter Checkbox erstellen
+        uses: actions/github-script@v8
+        env:
+          FRONTEND_REPO_PAT: ${{ secrets.FRONTEND_REPO_PAT }}
+        with:
+          # Der Fallback erlaubt das saubere Überspringen ohne konfiguriertes PAT.
+          # Vor jedem API-Aufruf prüft das Skript das Vorhandensein des PAT.
+          github-token: ${{ secrets.FRONTEND_REPO_PAT || github.token }}
+          script: |
+            const pr = context.payload.pull_request;
+            if (!pr?.merged || pr.base?.ref !== 'dev') return;
+
+            // PR-Text nur als Daten lesen, niemals als Actions-Ausdruck einsetzen.
+            const body = (pr.body ?? '').replace(/\r\n?/g, '\n')
+              .replace(/<!--[\s\S]*?(?:-->|$)/g, '');
+            let fence = null;
+            const lines = body.split('\n').map((text) => {
+              // Checkboxen/Überschriften in Codebeispielen nicht interpretieren.
+              const marker = text.match(/^\s*(`{3,}|~{3,})(.*)$/);
+              if (fence) {
+                if (marker && marker[1][0] === fence[0] &&
+                    marker[1].length >= fence.length && !marker[2].trim()) fence = null;
+                return { text, code: true };
+              }
+              if (marker) {
+                fence = marker[1];
+                return { text, code: true };
+              }
+              return { text, code: false };
+            });
+            const notify = lines.some(({ text, code }) => !code &&
+              /^\s*[-*+]\s*\[\s*x\s*\]\s*(?:\*\*|__)?notify\s+frontend(?:\*\*|__)?\s*[:.!]?\s*$/i.test(text));
+            if (!notify) {
+              core.info('Notify Frontend ist nicht aktiviert; kein Issue erforderlich.');
+              return;
+            }
+
+            // Markdown-Überschriften: Großschreibung, Leerzeichen, Fettung und
+            // abschließende Doppelpunkte sind flexibel. Unterabschnitte bleiben erhalten.
+            const heading = ({ text, code }) => {
+              const match = !code && text.match(/^\s*(#{1,6})\s+(.+?)\s*#*\s*$/);
+              if (!match) return null;
+              return { level: match[1].length, name: match[2].replace(/[*_]/g, '')
+                .replace(/:\s*$/, '').replace(/\s+/g, ' ').trim().toLowerCase() };
+            };
+            const section = (pattern) => {
+              const start = lines.findIndex((line) => pattern.test(heading(line)?.name ?? ''));
+              if (start < 0) return '';
+              const level = heading(lines[start]).level;
+              let end = start + 1;
+              while (end < lines.length) {
+                const next = heading(lines[end]);
+                if (next && next.level <= level) break;
+                end++;
+              }
+              return lines.slice(start + 1, end).map((line) => line.text).join('\n').trim();
+            };
+            let feature = section(/^feature$/).replace(/\s+/g, ' ').trim();
+            let details = section(/^(?:details\s*\/\s*zusätzliche informationen|details|zusätzliche informationen)$/);
+            if (!feature) {
+              feature = 'Feature-Titel fehlt – bitte Backend-PR prüfen';
+              core.warning('Feature-Titel fehlt; verwende Platzhalter.');
+            }
+            if (!details) {
+              details = 'Keine zusätzlichen Informationen angegeben. Bitte den Backend-PR prüfen.';
+              core.warning('Details fehlen; verwende Platzhalter.');
+            }
+            // Auch sehr lange Eingaben sollen keine API-Validierung auslösen.
+            const prefix = 'Neues Backend-Feature: ';
+            if (feature.length > 256 - prefix.length) {
+              feature = feature.slice(0, 255 - prefix.length) + '…';
+              core.warning('Feature-Titel wurde für das Issue gekürzt.');
+            }
+            if (details.length > 60000) {
+              details = details.slice(0, 60000) + '\n\n[Details gekürzt; vollständig im Backend-PR.]';
+              core.warning('Details wurden für das Issue gekürzt.');
+            }
+
+            const owner = process.env.FRONTEND_OWNER?.trim();
+            const repo = process.env.FRONTEND_REPO?.trim();
+            if (!owner || !repo || [owner, repo].some((value) => value.startsWith('REPLACE_WITH_'))) {
+              core.setFailed('FRONTEND_OWNER und FRONTEND_REPO am Workflow-Anfang konfigurieren.');
+              return;
+            }
+            if (!process.env.FRONTEND_REPO_PAT?.trim()) {
+              core.setFailed('FRONTEND_REPO_PAT fehlt oder ist für dieses Event nicht verfügbar (z. B. Fork-PR).');
+              return;
+            }
+
+            const label = 'backend-notification';
+            const marker = `<!-- backend-notification:${context.repo.owner}/${context.repo.repo}#${pr.number} -->`;
+            // Wiederholte Runs überspringen vorhandene offene UND geschlossene Issues.
+            // Ohne Label-Filter, damit auch ein später entferntes Label keine Duplikate erzeugt.
+            for await (const { data } of github.paginate.iterator(github.rest.issues.listForRepo, {
+              owner, repo, state: 'all', per_page: 100,
+            })) {
+              const existing = data.find((issue) => !issue.pull_request && issue.body?.includes(marker));
+              if (existing) {
+                core.info(`Benachrichtigung existiert bereits: ${existing.html_url}`);
+                return;
+              }
+            }
+
+            try {
+              await github.rest.issues.getLabel({ owner, repo, name: label });
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              try {
+                await github.rest.issues.createLabel({
+                  owner, repo, name: label, color: '1D76DB',
+                  description: 'Fertiggestelltes Backend-Feature für das Frontend-Team',
+                });
+              } catch (creationError) {
+                // Zwei verschiedene PRs können gleichzeitig das erste Label anlegen.
+                if (creationError.status !== 422) throw creationError;
+                await github.rest.issues.getLabel({ owner, repo, name: label });
+              }
+            }
+
+            const { data: issue } = await github.rest.issues.create({
+              owner, repo, title: prefix + feature, labels: [label],
+              body: [
+                marker,
+                `Backend-PR: ${pr.html_url}`,
+                `Autor: @${pr.user?.login ?? 'unbekannt'}`,
+                '## Details / Zusätzliche Informationen',
+                details,
+              ].join('\n\n'),
+            });
+            core.info(`Frontend-Issue erstellt: ${issue.html_url}`);

@@ -1,0 +1,18 @@
+node_modules/
+dist/
+build/
+coverage/
+
+# Generierte Datei – wird von `npm run gen:types` überschrieben.
+types/database.types.ts
+
+# SQL formatiert Prettier nicht; für Migrations gilt `npm run db:lint`.
+*.sql
+
+# Von der Supabase CLI generiert.
+supabase/config.toml
+supabase/.temp/
+
+# Werkzeug-Konfiguration außerhalb des Projektcodes.
+.claude/
+package-lock.json

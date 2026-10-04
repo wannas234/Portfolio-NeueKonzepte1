@@ -1,0 +1,95 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+select no_plan();
+insert into public.courses(id,owner_id,title) values
+ ('98000000-0000-0000-0000-000000000001','11111111-1111-1111-1111-111111111111','RAG');
+insert into public.materials(id,course_id,created_by,type,title) values
+ ('98000000-0000-0000-0000-000000000002','98000000-0000-0000-0000-000000000001','11111111-1111-1111-1111-111111111111','source_document','PDF');
+insert into public.source_documents(id,material_id,processing_status,extracted_text,pages,page_count,completed_at) values
+ ('98000000-0000-0000-0000-000000000003','98000000-0000-0000-0000-000000000002','ready','Content','[{"page":1,"text":"Content"}]',1,now());
+create temporary table rag_fixture as select '98000000-0000-0000-0000-000000000003'::uuid as doc,
+ null::uuid as token, ('[1,' || repeat('0,',1534) || '0]')::extensions.vector as vector;
+grant select,update on rag_fixture to authenticated,service_role;
+select is((select count(*)::int from public.document_indexing_jobs where document_id=(select doc from rag_fixture)),1,'Ready text automatically enqueued');
+set local role service_role;
+update rag_fixture set token=(public.claim_document_indexing(doc)->>'lease_token')::uuid;
+select ok((select token is not null from rag_fixture),'Worker can claim');
+select is((select public.claim_document_indexing(doc) from rag_fixture),null::jsonb,'Second claim cannot duplicate work');
+select is((select public.finish_document_indexing_batch(doc,gen_random_uuid(),'gemini','gemini-embedding-2',1536,'[]',0) from rag_fixture),false,'Wrong lease rejected');
+select throws_ok($$select public.finish_document_indexing_batch(doc,token,'gemini','gemini-embedding-2',1536,'[]',1) from rag_fixture$$,'22023','INVALID_INDEXING_RESULT','Cannot skip chunks');
+select is((select public.finish_document_indexing_batch(doc,token,'gemini','gemini-embedding-2',1536,
+  (select jsonb_agg(jsonb_build_object('chunk_index',n,'content','Content','page_number',1,'metadata','{}'::jsonb,'embedding',vector::text::jsonb)) from generate_series(0,31) n),33)
+  from rag_fixture),true,'First batch stored');
+select is((select indexing_status from public.source_documents where id=(select doc from rag_fixture)),'processing','Partial document stays processing');
+select is((select public.finish_document_indexing_batch(doc,token,'gemini','gemini-embedding-2',1536,'[]',0) from rag_fixture),false,'Repeated finish cannot overwrite');
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"11111111-1111-1111-1111-111111111111","role":"authenticated"}';
+select is((select count(*)::int from public.document_chunks where document_id=(select doc from rag_fixture)),0,'Partial chunks hidden even from owner');
+select throws_ok($$select * from public.document_indexing_jobs$$,'42501',null,'Queue private');
+select throws_ok($$select public.claim_document_indexing(doc) from rag_fixture$$,'42501',null,'Client cannot claim');
+select throws_ok($$select public.finish_document_indexing_batch(doc,token,'gemini','gemini-embedding-2',1536,'[]',0) from rag_fixture$$,'42501',null,'Client cannot publish');
+select throws_ok($$delete from public.document_chunks$$,'42501',null,'Client cannot mutate chunks');
+set local role service_role;
+update rag_fixture set token=(public.claim_document_indexing(doc)->>'lease_token')::uuid;
+select is((select next_index from public.document_indexing_jobs where document_id=(select doc from rag_fixture)),32,'Cursor resumes after batch');
+select throws_ok($$select public.finish_document_indexing_batch(doc,token,'gemini','gemini-embedding-2',1536,jsonb_build_array(jsonb_build_object('chunk_index',32,'content','Content','page_number',2,'metadata','{}'::jsonb,'embedding',vector::text::jsonb)),33) from rag_fixture$$,'22023','INVALID_INDEXING_RESULT','Invalid page rejected');
+select is((select public.finish_document_indexing_batch(doc,token,'gemini','gemini-embedding-2',1536,jsonb_build_array(jsonb_build_object('chunk_index',32,'content','Different','page_number',1,'metadata','{}'::jsonb,'embedding',('[0,1,' || repeat('0,',1533) || '0]')::jsonb)),33) from rag_fixture),true,'Final batch published');
+select is((select indexing_status from public.source_documents where id=(select doc from rag_fixture)),'ready','Fully indexed');
+select is((select count(*)::int from public.document_indexing_jobs where document_id=(select doc from rag_fixture)),0,'Finished queue removed');
+set local role authenticated;
+select is((select count(*)::int from public.document_chunks where document_id=(select doc from rag_fixture)),33,'Owner sees all chunks');
+select is((select count(*)::int from public.search_document_chunks('98000000-0000-0000-0000-000000000001',(select vector from rag_fixture),'gemini','gemini-embedding-2',1536,50,0.9)),32,'Cosine threshold excludes orthogonal vector');
+select is((select similarity from public.search_document_chunks('98000000-0000-0000-0000-000000000001',(select vector from rag_fixture),'gemini','gemini-embedding-2',1536,1,0)),1::double precision,'Exact vector ranks first');
+select throws_ok($$select * from public.search_document_chunks('98000000-0000-0000-0000-000000000001','[1,0]'::extensions.vector,'gemini','gemini-embedding-2',1536)$$,'22023','INVALID_SEARCH','Wrong query dimension rejected');
+select throws_ok($$select * from public.search_document_chunks('98000000-0000-0000-0000-000000000001',(select vector from rag_fixture),'gemini','gemini-embedding-2',1536,51)$$,'22023','INVALID_SEARCH','Search bounded');
+set local request.jwt.claims = '{"sub":"22222222-2222-2222-2222-222222222222","role":"authenticated"}';
+select is((select count(*)::int from public.document_chunks where document_id=(select doc from rag_fixture)),0,'Foreign chunks hidden');
+select is((select count(*)::int from public.search_document_chunks('98000000-0000-0000-0000-000000000001',(select vector from rag_fixture),'gemini','gemini-embedding-2',1536)),0,'Search cannot cross ownership');
+select throws_ok($$select public.retry_document_indexing(doc) from rag_fixture$$,'P0002','DOCUMENT_NOT_FOUND','Foreign retry denied');
+reset role;
+-- Simulate a retryable failed document and expired worker, without changing extraction.
+update public.source_documents set indexing_status='failed',indexing_error='INDEXING_TIMEOUT' where id=(select doc from rag_fixture);
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"11111111-1111-1111-1111-111111111111","role":"authenticated"}';
+select lives_ok($$select public.retry_document_indexing(doc) from rag_fixture$$,'Owner retries indexing');
+select lives_ok($$select public.retry_document_indexing(doc) from rag_fixture$$,'Retry is idempotent');
+reset role;
+select is((select count(*)::int from public.document_chunks where document_id=(select doc from rag_fixture)),0,'Retry removes partial previous chunks');
+update public.document_indexing_jobs set available_at=now() where document_id=(select doc from rag_fixture);
+update rag_fixture set token=(public.claim_document_indexing(doc)->>'lease_token')::uuid;
+update public.document_indexing_jobs set lease_until=now()-interval '1 second' where document_id=(select doc from rag_fixture);
+select is((select public.finish_document_indexing_batch(doc,token,'gemini','gemini-embedding-2',1536,'[]',0) from rag_fixture),false,'Expired output discarded');
+select ok((select (public.claim_document_indexing(doc)->>'lease_token')::uuid <> token from rag_fixture),'Expired lease replaced');
+select is((select public.finish_document_indexing_batch(doc,token,'gemini','gemini-embedding-2',1536,'[]',0) from rag_fixture),false,'Old worker cannot overwrite new attempt');
+update public.document_indexing_jobs set attempts=3,lease_until=now()-interval '1 second' where document_id=(select doc from rag_fixture);
+select is((select public.claim_document_indexing(doc) from rag_fixture),null::jsonb,'Exhaustion stops automatic retries');
+select is((select indexing_error from public.source_documents where id=(select doc from rag_fixture)),'INDEXING_TIMEOUT','Failure visible');
+set local role authenticated;
+select public.retry_document_indexing(doc) from rag_fixture;
+reset role;
+update public.document_indexing_jobs set available_at=now() where document_id=(select doc from rag_fixture);
+update rag_fixture set token=(public.claim_document_indexing(doc)->>'lease_token')::uuid;
+select is((select public.finish_document_indexing_batch(doc,token,'gemini','gemini-embedding-2',1536,'[]',0) from rag_fixture),true,'Empty extraction can finish with zero vectors');
+select ok(exists(select 1 from cron.job where jobname='learning-documents-index'),'Automatic scheduler installed');
+select is((select prosecdef from pg_proc where oid='public.search_document_chunks(uuid,extensions.vector,text,text,integer,integer,double precision)'::regprocedure),false,'Search runs under caller RLS');
+select is((select count(*)::int from public.search_document_chunks('98000000-0000-0000-0000-000000000001',(select vector from rag_fixture),'gemini','gemini-embedding-2',1536)),0,'Explicit matching embedding contract accepted');
+select throws_ok($$select * from public.search_document_chunks('98000000-0000-0000-0000-000000000001',(select vector from rag_fixture),'openai','gemini-embedding-2',1536)$$,'22023','EMBEDDING_CONTRACT_MISMATCH','Same dimension but different provider rejected');
+select throws_ok($$select * from public.search_document_chunks('98000000-0000-0000-0000-000000000001',(select vector from rag_fixture),'gemini','other-model',1536)$$,'22023','EMBEDDING_CONTRACT_MISMATCH','Same dimension but different model rejected');
+select throws_ok($$select * from public.search_document_chunks('98000000-0000-0000-0000-000000000001',(select vector from rag_fixture),'gemini','gemini-embedding-2',768)$$,'22023','EMBEDDING_CONTRACT_MISMATCH','Different declared dimension rejected');
+select throws_ok($$select public.finish_document_indexing_batch(doc,token,'gemini','gemini-embedding',1536,'[]',0) from rag_fixture$$,'22023','EMBEDDING_CONTRACT_MISMATCH','Worker cannot publish another vector space');
+set local role anon;
+select throws_ok($$select * from public.document_chunks$$,'42501',null,'Anonymous chunks denied');
+select throws_ok($$select * from public.search_document_chunks(gen_random_uuid(),'[1,0]'::extensions.vector,'gemini','gemini-embedding-2',1536)$$,'42501',null,'Anonymous search denied');
+reset role;
+insert into public.document_chunks(document_id,chunk_index,content,page_number,embedding)
+  select doc,0,'Cascade fixture',1,vector from rag_fixture;
+insert into public.document_indexing_jobs(document_id) select doc from rag_fixture;
+delete from public.courses where id='98000000-0000-0000-0000-000000000001';
+select is((select count(*)::int from public.document_chunks where document_id=(select doc from rag_fixture)),0,'Course deletion cascades chunks');
+select is((select count(*)::int from public.document_indexing_jobs where document_id=(select doc from rag_fixture)),0,'Course deletion cascades queue');
+select is((select public.finish_document_indexing_batch(doc,token,'gemini','gemini-embedding-2',1536,'[]',0) from rag_fixture),false,'Deletion rejects stale worker');
+select ok(to_regprocedure('public.match_document_chunks(uuid,extensions.vector,integer,double precision)') is null,'Legacy search without provenance removed');
+select ok(to_regprocedure('public.finish_document_indexing(uuid,uuid,jsonb,integer,text)') is null,'Legacy writer without provenance removed');
+select ok(not has_schema_privilege('authenticated','embedding_archive','usage'),'Archive hidden from clients');
+select * from finish();
+rollback;

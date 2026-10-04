@@ -1,0 +1,124 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+select no_plan();
+insert into public.courses(id,owner_id,title) values
+ ('99000000-0000-0000-0000-000000000001','11111111-1111-1111-1111-111111111111','Processing');
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"11111111-1111-1111-1111-111111111111","role":"authenticated"}';
+select public.prepare_file_upload('99000000-0000-0000-0000-000000000001','99000000-0000-0000-0000-000000000002','notes.txt','text/plain',5);
+select throws_ok($$select public.complete_file_upload(gen_random_uuid(),auth.uid())$$,'42501',null,'Client cannot bypass byte verification');
+select throws_ok($$select public.claim_document_processing(gen_random_uuid())$$,'42501',null,'Client cannot claim work');
+select throws_ok($$select public.finish_document_processing(gen_random_uuid(),gen_random_uuid(),'fake')$$,'42501',null,'Client cannot finish work');
+select throws_ok($$select * from public.document_processing_jobs$$,'42501',null,'Queue stays private');
+reset role;
+create temporary table processing_fixture as select id as file_id, null::uuid as document_id, null::uuid as material_id,
+  null::uuid as lease_token from public.files where upload_key='99000000-0000-0000-0000-000000000002';
+grant select, update on processing_fixture to authenticated, service_role;
+-- Model an already existing source material that must be reused.
+insert into public.materials(course_id,created_by,file_id,type,title)
+ select '99000000-0000-0000-0000-000000000001','11111111-1111-1111-1111-111111111111',file_id,'source_document','Existing title' from processing_fixture;
+set local role service_role;
+select lives_ok($$select public.complete_file_upload(file_id,'11111111-1111-1111-1111-111111111111') from processing_fixture$$,'Privileged completion succeeds');
+select lives_ok($$select public.complete_file_upload(file_id,'11111111-1111-1111-1111-111111111111') from processing_fixture$$,'Completion can be repeated');
+reset role;
+update processing_fixture f set document_id=d.id, material_id=m.id from public.source_documents d
+ join public.materials m on m.id=d.material_id where m.file_id=f.file_id;
+select is((select count(*)::int from public.materials m join processing_fixture f on f.file_id=m.file_id),1,'No duplicate material');
+select is((select title from public.materials where id=(select material_id from processing_fixture)),'Existing title','Backfill preserves title');
+select is((select processing_status from public.source_documents where id=(select document_id from processing_fixture)),'uploaded','Confirmed upload is not processed');
+select is((select count(*)::int from public.document_processing_jobs where document_id=(select document_id from processing_fixture)),1,'One durable job');
+select is((select status from public.files where id=(select file_id from processing_fixture)),'ready','File is ready for download');
+set local role authenticated;
+select is((select count(*)::int from public.source_documents where id=(select document_id from processing_fixture)),1,'Owner sees status');
+select throws_ok($$update public.source_documents set processing_status='ready'$$,'42501',null,'Client cannot forge results');
+select throws_ok($$update public.materials set file_id=null where id=(select material_id from processing_fixture)$$,'23514','SOURCE_LINK_IMMUTABLE','Client cannot detach source');
+select throws_ok($$insert into public.materials(course_id,created_by,type,title) values ('99000000-0000-0000-0000-000000000001',auth.uid(),'source_document','Fake')$$,'42501',null,'Client cannot manufacture source material');
+set local request.jwt.claims = '{"sub":"22222222-2222-2222-2222-222222222222","role":"authenticated"}';
+select is((select count(*)::int from public.source_documents where id=(select document_id from processing_fixture)),0,'Foreign status hidden');
+select throws_ok($$select public.retry_document_processing(document_id) from processing_fixture$$,'P0002','DOCUMENT_NOT_FOUND','Foreign retry denied');
+reset role;
+set local role service_role;
+update processing_fixture set lease_token=(public.claim_document_processing(document_id)->>'lease_token')::uuid;
+select ok((select lease_token is not null from processing_fixture),'Worker receives lease');
+select is((select public.claim_document_processing(document_id) from processing_fixture),null::jsonb,'Active lease prevents duplicate work');
+select is((select public.finish_document_processing(document_id,gen_random_uuid(),'wrong') from processing_fixture),false,'Wrong token rejected');
+select throws_ok($$select public.finish_document_processing(document_id,lease_token,'text','[{"page":2,"text":"text"}]') from processing_fixture$$,'22023','INVALID_PROCESSING_RESULT','Page numbers must be contiguous from one');
+select throws_ok($$select public.finish_document_processing(document_id,lease_token,null) from processing_fixture$$,'22023','INVALID_PROCESSING_RESULT','Missing output cannot become ready');
+select is((select public.finish_document_processing(document_id,lease_token,null,null,'INVALID_DOCUMENT') from processing_fixture),true,'Failure is persisted');
+select is((select processing_status from public.source_documents where id=(select document_id from processing_fixture)),'failed','Failed status visible');
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"11111111-1111-1111-1111-111111111111","role":"authenticated"}';
+select lives_ok($$select public.retry_document_processing(document_id) from processing_fixture$$,'Owner can retry');
+select lives_ok($$select public.retry_document_processing(document_id) from processing_fixture$$,'Retry is idempotent');
+reset role;
+update public.document_processing_jobs set available_at=now() where document_id=(select document_id from processing_fixture);
+set local role service_role;
+update processing_fixture set lease_token=(public.claim_document_processing(document_id)->>'lease_token')::uuid;
+reset role;
+update public.document_processing_jobs set lease_until=now()-interval '1 second' where document_id=(select document_id from processing_fixture);
+select is((select public.finish_document_processing(document_id,lease_token,'late') from processing_fixture),false,'Expired lease cannot publish');
+create temporary table old_lease as table processing_fixture;
+update processing_fixture set lease_token=(public.claim_document_processing(document_id)->>'lease_token')::uuid;
+select isnt((select lease_token from processing_fixture),(select lease_token from old_lease),'Recovery assigns a new token');
+select is((select public.finish_document_processing(document_id,lease_token,'stale') from old_lease),false,'Previous attempt cannot overwrite current attempt');
+select is((select public.finish_document_processing(document_id,lease_token,'Hallo','[{"page":1,"text":"Hallo"}]') from processing_fixture),true,'Current attempt atomically publishes text and pages');
+select is((select page_count from public.source_documents where id=(select document_id from processing_fixture)),1,'Page count derived from pages');
+select is((select extracted_text from public.source_documents where id=(select document_id from processing_fixture)),'Hallo','Text persisted');
+select is((select count(*)::int from public.document_processing_jobs where document_id=(select document_id from processing_fixture)),0,'Completed job removed');
+select is((select public.finish_document_processing(document_id,lease_token,'overwrite') from processing_fixture),false,'Repeated finish cannot overwrite result');
+set local role authenticated;
+select lives_ok($$select public.retry_document_processing(document_id) from processing_fixture$$,'Retry after ready is harmless');
+delete from public.files where id=(select file_id from processing_fixture);
+reset role;
+select is((select processing_status from public.source_documents where id=(select document_id from processing_fixture)),'ready','Extracted content survives file deletion');
+select is((select file_id from public.materials where id=(select material_id from processing_fixture)),null::uuid,'Deleted source link is cleared');
+
+-- Another source: exhausted leases and deletion during processing.
+set local role authenticated;
+select public.prepare_file_upload('99000000-0000-0000-0000-000000000001',gen_random_uuid(),'other.txt','text/plain',5);
+reset role;
+update processing_fixture set file_id=(select id from public.files where course_id='99000000-0000-0000-0000-000000000001');
+select public.complete_file_upload(file_id,'11111111-1111-1111-1111-111111111111') from processing_fixture;
+update processing_fixture f set document_id=d.id, material_id=m.id from public.source_documents d
+ join public.materials m on m.id=d.material_id where m.file_id=f.file_id;
+update public.document_processing_jobs set attempts=3 where document_id=(select document_id from processing_fixture);
+select is((select public.claim_document_processing(document_id) from processing_fixture),null::jsonb,'Exhausted attempts are not claimed');
+select is((select error_code from public.source_documents where id=(select document_id from processing_fixture)),'PROCESSING_TIMEOUT','Exhaustion produces visible failure');
+set local role authenticated;
+select public.retry_document_processing(document_id) from processing_fixture;
+reset role;
+update public.document_processing_jobs set available_at=now() where document_id=(select document_id from processing_fixture);
+update processing_fixture set lease_token=(public.claim_document_processing(document_id)->>'lease_token')::uuid;
+update public.files set status='deleting' where id=(select file_id from processing_fixture);
+select is((select public.finish_document_processing(document_id,lease_token,'late') from processing_fixture),false,'Deleting file rejects output');
+delete from public.files where id=(select file_id from processing_fixture);
+select is((select error_code from public.source_documents where id=(select document_id from processing_fixture)),'SOURCE_DELETED','Unfinished source fails when file is deleted');
+select is((select count(*)::int from public.document_processing_jobs where document_id=(select document_id from processing_fixture)),0,'File deletion cancels job');
+select is((select public.finish_document_processing(document_id,lease_token,'late') from processing_fixture),false,'Deleted source rejects late output');
+
+set local role authenticated;
+select public.prepare_file_upload('99000000-0000-0000-0000-000000000001',gen_random_uuid(),'atomic.txt','text/plain',5);
+reset role;
+update processing_fixture set file_id=(select id from public.files where course_id='99000000-0000-0000-0000-000000000001');
+insert into public.materials(course_id,created_by,file_id,type,title)
+ select '99000000-0000-0000-0000-000000000001','22222222-2222-2222-2222-222222222222',file_id,'source_document','Inconsistent legacy source' from processing_fixture;
+select throws_ok($$select public.complete_file_upload(file_id,'11111111-1111-1111-1111-111111111111') from processing_fixture$$,'23514','INVALID_SOURCE_MATERIAL','Inconsistent legacy source aborts completion');
+select is((select status from public.files where id=(select file_id from processing_fixture)),'pending','Failed material creation rolls back file readiness');
+update public.materials set created_by='11111111-1111-1111-1111-111111111111' where file_id=(select file_id from processing_fixture);
+select public.complete_file_upload(file_id,'11111111-1111-1111-1111-111111111111') from processing_fixture;
+update processing_fixture f set document_id=d.id, material_id=m.id from public.source_documents d
+ join public.materials m on m.id=d.material_id where m.file_id=f.file_id;
+update processing_fixture set lease_token=(public.claim_document_processing(document_id)->>'lease_token')::uuid;
+set local role authenticated;
+delete from public.materials where id=(select material_id from processing_fixture);
+reset role;
+select is((select count(*)::int from public.document_processing_jobs where document_id=(select document_id from processing_fixture)),0,'Material deletion cancels active job');
+select is((select public.finish_document_processing(document_id,lease_token,'late') from processing_fixture),false,'Material deletion rejects late output');
+delete from public.courses where id='99000000-0000-0000-0000-000000000001';
+select is((select count(*)::int from public.source_documents where id=(select document_id from processing_fixture)),0,'Course deletion removes processing metadata');
+set local role anon;
+select throws_ok($$select * from public.source_documents$$,'42501',null,'Anonymous read denied');
+select throws_ok($$select public.retry_document_processing(gen_random_uuid())$$,'42501',null,'Anonymous retry denied');
+reset role;
+select * from finish();
+rollback;

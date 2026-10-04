@@ -1,0 +1,16 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+select no_plan();
+select is((select schedule from cron.job where jobname='learning-documents-process'),'* * * * *','Processing runs every minute');
+set local role authenticated;
+select throws_ok($$select public.configure_document_processing('https://abcdefghijklmnopqrst.supabase.co',repeat('x',50))$$,'42501',null,'Client cannot configure worker credentials');
+reset role;
+select throws_ok($$select public.configure_document_processing('http://untrusted.invalid',repeat('x',50))$$,'22023','INVALID_PROCESSING_CONFIG','Invalid scheduler URL rejected');
+set local role service_role;
+select lives_ok($$select public.configure_document_processing('https://abcdefghijklmnopqrst.supabase.co',repeat('x',50))$$,'Deployment configures worker');
+select lives_ok($$select public.configure_document_processing('https://abcdefghijklmnopqrst.supabase.co',repeat('y',50))$$,'Credentials can rotate');
+reset role;
+select is((select decrypted_secret from vault.decrypted_secrets where name='document_processing_service_key'),repeat('y',50),'Rotation updates worker key');
+select is((select decrypted_secret from vault.decrypted_secrets where name='document_processing_url'),'https://abcdefghijklmnopqrst.supabase.co/functions/v1/documents-process','Worker target stored in Vault');
+select * from finish();
+rollback;

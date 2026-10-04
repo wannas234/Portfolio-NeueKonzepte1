@@ -1,0 +1,149 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [main, dev]
+
+# PR-Prüfungen dürfen ersetzt werden; laufende Deploys werden nicht abgebrochen.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  functions:
+    name: Format & Edge Functions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run test:tools
+      - run: npm run functions:lint
+      - run: npm run functions:check
+      - run: npm run functions:test
+
+  database:
+    name: Migrations & pgTAP-Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # documents-process lehnt ohne Gemini-Key jede Anfrage mit 503 ab. Die Tests
+      # verarbeiten nur lokal extrahierbare Seiten; ein Platzhalter genügt.
+      - name: Edge-Function-Umgebung für Tests anlegen
+        run: printf 'GEMINI_API_KEY=ci-placeholder\n' > supabase/functions/.env
+      - name: Frischen lokalen Stack starten
+        run: npm run db:start
+      - run: npm run db:lint
+      - run: npm run test:db
+      - run: npm run test:embedding-migration
+      - run: npm run test:chat
+      - run: npm run test:summaries
+      - run: npm run test:flashcards
+      - run: npm run test:quizzes
+      - run: npm run test:learning
+      - run: npm run test:auth
+      - run: npm run test:storage
+      - run: npm run test:files
+      - name: Generierte Typen prüfen
+        run: |
+          npm run gen:types
+          git diff --exit-code types/database.types.ts
+      - name: Stack stoppen
+        if: always()
+        run: npm run db:stop
+
+  deploy_staging:
+    name: Deploy development
+    needs: [functions, database]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    environment: development
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Ziel und Commit prüfen
+        run: |
+          test -n "$SUPABASE_ACCESS_TOKEN"
+          test -n "$SUPABASE_DB_PASSWORD"
+          test -n "$SUPABASE_PROJECT_REF"
+          current_sha=$(git ls-remote origin "$GITHUB_REF" | cut -f1)
+          if [ "$current_sha" != "$GITHUB_SHA" ]; then
+            echo "::error::Dieser Commit ist überholt. Bitte den aktuellen CI-Lauf verwenden."
+            exit 1
+          fi
+          echo "Deploy $GITHUB_SHA nach development ($SUPABASE_PROJECT_REF)" >> "$GITHUB_STEP_SUMMARY"
+      - name: Migrations anwenden
+        run: |
+          npx supabase migration list --project-ref "$SUPABASE_PROJECT_REF"
+          npx supabase db push --project-ref "$SUPABASE_PROJECT_REF" --yes
+      - name: Edge Functions deployen
+        run: npx supabase functions deploy --project-ref "$SUPABASE_PROJECT_REF"
+      - name: Datei-Bereinigung und Dokumentverarbeitung konfigurieren
+        run: node scripts/configure-file-cleanup.mjs
+      - name: Migrationsstand anzeigen
+        run: npx supabase migration list --project-ref "$SUPABASE_PROJECT_REF"
+
+  deploy_production:
+    name: Deploy production
+    needs: [functions, database]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Ziel und Commit prüfen
+        run: |
+          test -n "$SUPABASE_ACCESS_TOKEN"
+          test -n "$SUPABASE_DB_PASSWORD"
+          test -n "$SUPABASE_PROJECT_REF"
+          current_sha=$(git ls-remote origin "$GITHUB_REF" | cut -f1)
+          if [ "$current_sha" != "$GITHUB_SHA" ]; then
+            echo "::error::Dieser Commit ist überholt. Bitte den aktuellen CI-Lauf verwenden."
+            exit 1
+          fi
+          echo "Deploy $GITHUB_SHA nach production ($SUPABASE_PROJECT_REF)" >> "$GITHUB_STEP_SUMMARY"
+      - name: Migrations anwenden
+        run: |
+          npx supabase migration list --project-ref "$SUPABASE_PROJECT_REF"
+          npx supabase db push --project-ref "$SUPABASE_PROJECT_REF" --yes
+      - name: Edge Functions deployen
+        run: npx supabase functions deploy --project-ref "$SUPABASE_PROJECT_REF"
+      - name: Datei-Bereinigung und Dokumentverarbeitung konfigurieren
+        run: node scripts/configure-file-cleanup.mjs
+      - name: Migrationsstand anzeigen
+        run: npx supabase migration list --project-ref "$SUPABASE_PROJECT_REF"

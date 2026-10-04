@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.pnp.*
+
+# Environment / Secrets
+.env
+.env.*
+!.env.example
+
+# Supabase CLI local state (NICHT: der supabase/ Ordner selbst!)
+.supabase/
+supabase/.branches/
+supabase/.temp/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test / Coverage
+coverage/
+
+# Editor / OS
+# .vscode/settings.json + extensions.json werden bewusst committed,
+# damit alle Kollaboratoren identische Editor-Einstellungen haben.
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+
+# Claude Code: lokale Werkzeug-Konfiguration
+.claude/

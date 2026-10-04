@@ -1,0 +1,9 @@
+# Formatierung auf den gestageten Dateien.
+npx lint-staged
+
+# Edge Functions linten (Deno). Der Typecheck `npm run functions:check` läuft
+# in der CI – er lädt beim ersten Mal Abhängigkeiten und wäre hier zu langsam.
+npm run functions:lint
+
+# Die pgTAP-Tests laufen hier absichtlich NICHT – sie brauchen einen laufenden
+# Docker-Stack. Sie laufen in der CI bei jedem Pull Request.

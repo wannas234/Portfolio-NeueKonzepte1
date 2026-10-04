@@ -1,0 +1,39 @@
+{
+  "review_required": true,
+  "note": "Compare the original PDF and page text/cells/formulas. Matching strings alone cannot establish mathematical or table correctness.",
+  "energy": {
+    "6": [
+      "E = P · t",
+      "η = P_ab / P_zu",
+      "η_ges = η_1 · η_2 · … · η_n",
+      "T_VL = E_a / P_N",
+      "CF = T_VL / 8.760 h",
+      "P = ½ · ρ · A · v³",
+      "Subscripts and exponents are semantic; preserve the worked example and both columns."
+    ],
+    "8": [
+      "PV monthly points are read/estimated from axes, not exact printed values: approximately 6,10,18,25,31,34,35,30,22,14,8,5 GWh.",
+      "Sector labels: Industrie 38 %, Haushalte 28 %, Verkehr 24 %, GHD 9 %. Do not repair their sum."
+    ],
+    "11": ["12 Anlagen", "4,2 MW je WEA", "ca. 118 GWh", "97,8 % technische Verfügbarkeit"]
+  },
+  "slides": {
+    "32": [
+      "Apple 8 %, Microsoft 7 %, Nvidia 5 %, Amazon 4 %, Google 4 %, Meta 3 %, Berkshire Hathaway 2 %, Other Companies 67 %"
+    ],
+    "46": [
+      "CAGR = ((Endwert / Anfangswert)^(1/n) - 1) · 100",
+      "n = 2020 - 2015 = 5 (not 6); 90/40; approximately 17,6 %"
+    ],
+    "50": [
+      "Columns: Beverage Company 1 | Competitive Brand Beverage | Small Batch Beverage | Beverage Company 3",
+      "Average Price: $4.75 | $3.58 | $4.78 | $4.19",
+      "Servings: 3 | 3 | 1 | 2",
+      "Cost / Serving: $1.86 | $1.16 | $4.98 | $2.04",
+      "Star Rating (# Reviews): 5.0 (5) | 4.1 (155) | 4.9 (52) | 4.2 (22)",
+      "Sales Rank: #290 | #10 | #30 | #65"
+    ],
+    "57": ["Local route, preserve original URL and page 57"],
+    "62": ["Local route, preserve original URL and page 62"]
+  }
+}
